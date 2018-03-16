@@ -421,8 +421,8 @@ for t in ['embed', 'mc', 'ratio', 'embed_ratio']:
     w.factory('expr::m_idiso_binned_ic_%s("@0*@1", m_id_ic_%s, m_iso_binned_ic_%s)' % (t, t, t)) 
     w.factory('expr::m_idiso_ic_%s("@0*@1", m_id_ic_%s, m_iso_ic_%s)' % (t, t, t))
     
-w.factory('expr::m_idiso_em_ic_ratio("@0/(@1*@2)", m_idiso0p20_desy_data, m_iso_em_ic_mc, m_id_em_ic_mc)' # data part here is taken from DESY measurments
-w.factory('expr::m_idiso_em_ic_embed_ratio("@0/(@1*@2)", m_idiso0p20_desy_data, m_iso_em_ic_embed, m_id_em_ic_embed)' # data part here is taken from DESY measurments    
+w.factory('expr::m_idiso_em_ic_ratio("min(1.99,@0/(@1*@2))", m_idiso0p20_desy_data, m_iso_em_ic_mc, m_id_em_ic_mc)') # data part here is taken from DESY measurments
+w.factory('expr::m_idiso_em_ic_embed_ratio("min(1.99,@0/(@1*@2))", m_idiso0p20_desy_data, m_iso_em_ic_embed, m_id_em_ic_embed)') # data part here is taken from DESY measurments    
 
 histsToWrap = [
     (loc+'SingleLepton/electron_SFs.root:id_mc', 'e_id_ic_mc'),
@@ -510,9 +510,27 @@ for t in ['embed', 'mc', 'ratio', 'embed_ratio']:
     w.factory('expr::e_idiso_binned_ic_%s("@0*@1", e_id_ic_%s, e_iso_binned_ic_%s)' % (t, t, t)) 
     w.factory('expr::e_idiso_ic_%s("@0*@1", e_id_ic_%s, e_iso_ic_%s)' % (t, t, t))
     
-w.factory('expr::e_idiso_em_ic_ratio("@0/(@1*@2)", e_idiso0p15_desy_data, e_iso_em_ic_mc, e_id_em_ic_mc)' # data part here is taken from DESY measurments
-w.factory('expr::e_idiso_em_ic_embed_ratio("@0/(@1*@2)", e_idiso0p15_desy_data, e_iso_em_ic_embed, e_id_em_ic_embed)' # data part here is taken from DESY measurments 
-    
+w.factory('expr::e_idiso_em_ic_ratio("min(1.99,@0/(@1*@2))", e_idiso0p15_desy_data, e_iso_em_ic_mc, e_id_em_ic_mc)') # data part here is taken from DESY measurments
+w.factory('expr::e_idiso_em_ic_embed_ratio("min(1.99,@0/(@1*@2))", e_idiso0p15_desy_data, e_iso_em_ic_embed, e_id_em_ic_embed)') # data part here is taken from DESY measurments 
+
+
+## IC jet->tau SFs
+
+loc = 'inputs/ICSF/faketaus/'
+
+dy_fit_data =  GetFromTFile(loc+'/taufakes_zmm.root:data_eff_fit')
+dy_fit_mc =  GetFromTFile(loc+'/taufakes_zmm.root:mc_eff_fit')
+params_data = dy_fit_data.GetParameters()
+params_mc = dy_fit_mc.GetParameters()
+w.factory('expr::t_pt_max400("min(400,@0)",t_pt[0])')
+w.factory('expr::t_jetfake_dy_data("%f*exp(%f*@0)+%f+%f*exp(%f*@0)",t_pt_max400)' % (params_data[0],params_data[1],params_data[2],params_data[3],params_data[4]))
+w.factory('expr::t_jetfake_dy_mc("%f*exp(%f*@0)+%f+%f*exp(%f*@0)",t_pt_max400)' % (params_mc[0],params_mc[1],params_mc[2],params_mc[3],params_mc[4]))
+w.factory('expr::t_jetfake_dy_ratio("@0/@1",t_jetfake_dy_data,t_jetfake_dy_mc)')
+
+ttbar_fit = GetFromTFile(loc+'/taufakes_em.root:ratio_pol1')
+params = ttbar_fit.GetParameters()
+w.factory('expr::t_pt_max80("min(80,@0)",t_pt[0])')
+w.factory('expr::t_jetfake_ttbar_ratio("%f+%f*@0",t_pt_max80)' % (params[0],params[1]))
 
 ### KIT tau ID scale factors
 loc = 'inputs/KIT/tau_id_sfs_2016.root:'
@@ -558,6 +576,80 @@ with open('inputs/triggerSF-Moriond17/di-tau/fitresults_tt_moriond2017.json') as
                                                't_%s_tt_mc' % label, ['t_%s_dm0_tt_mc' % label, 't_%s_dm1_tt_mc' % label, 't_%s_dm10_tt_mc' % label])
             w.factory('expr::t_%s_tt_ratio("@0/@1", t_%s_tt_data, t_%s_tt_mc)' % (label, label, label))
 
+interpOrder = 1
+tau_mt_file = ROOT.TFile('inputs/triggerSF-Moriond17/mu-tau/trigger_sf_mt.root')
+for tautype in ['genuine', 'fake']:
+    for iso in ['NoIso',
+                'VLooseIso',
+                'LooseIso',
+                'MediumIso',
+                'TightIso',
+                'VTightIso',
+                'VVTightIso']:
+        for region in ['barrel', 'endcap']:
+            label = '%s_%s_%s' % (tautype, region, iso)
+
+            wsptools.SafeWrapHist(w, ['t_pt'], wsptools.TGraphAsymmErrorsToTH1DForTaus(
+                tau_mt_file.Get('data_%s' % label)), name='t_%s_mt_data' % label)
+            wsptools.SafeWrapHist(w, ['t_pt'], wsptools.TGraphAsymmErrorsToTH1DForTaus(
+                tau_mt_file.Get('mc_%s' % label)), name='t_%s_mt_mc' % label)
+
+            w.function('t_%s_mt_data' % label).setInterpolationOrder(interpOrder)
+            w.function('t_%s_mt_mc' % label).setInterpolationOrder(interpOrder)
+
+            w.factory('expr::t_%s_mt_ratio("@0/@1", t_%s_mt_data, t_%s_mt_mc)' % (label, label, label))
+
+        w.factory('expr::t_%s_%s_mt_ratio("TMath::Abs(@0) < 1.5 ? @1 : @2", t_eta[0], t_%s_barrel_%s_mt_ratio, t_%s_endcap_%s_mt_ratio)' %
+            (tautype, iso, tautype, iso, tautype, iso))
+        w.factory('expr::t_%s_%s_mt_data("TMath::Abs(@0) < 1.5 ? @1 : @2", t_eta[0], t_%s_barrel_%s_mt_data, t_%s_endcap_%s_mt_data)' %
+            (tautype, iso, tautype, iso, tautype, iso))
+        w.factory('expr::t_%s_%s_mt_mc("TMath::Abs(@0) < 1.5 ? @1 : @2", t_eta[0], t_%s_barrel_%s_mt_mc, t_%s_endcap_%s_mt_mc)' %
+            (tautype, iso, tautype, iso, tautype, iso))
+
+tau_mt_file.Close()
+
+tau_et_file = ROOT.TFile('inputs/triggerSF-Moriond17/ele-tau/trigger_sf_et.root')
+for tautype in ['genuine', 'fake']:
+    for iso in ['NoIso',
+                'VLooseIso',
+                'LooseIso',
+                'MediumIso',
+                'TightIso',
+                'VTightIso',
+                'VVTightIso']:
+        for region in ['barrel', 'endcap']:
+            label = '%s_%s_%s' % (tautype, region, iso)
+
+            wsptools.SafeWrapHist(w, ['t_pt'], wsptools.TGraphAsymmErrorsToTH1DForTaus(
+                tau_et_file.Get('data_%s_dm0' % label)), name='t_%s_dm0_et_data' % label)
+            wsptools.SafeWrapHist(w, ['t_pt'], wsptools.TGraphAsymmErrorsToTH1DForTaus(
+                tau_et_file.Get('data_%s_dm1' % label)), name='t_%s_dm1_et_data' % label)
+            wsptools.SafeWrapHist(w, ['t_pt'], wsptools.TGraphAsymmErrorsToTH1DForTaus(
+                tau_et_file.Get('data_%s_dm10' % label)), name='t_%s_dm10_et_data' % label)
+
+            wsptools.MakeBinnedCategoryFuncMap(w, 't_dm', [-0.5, 0.5, 9.5, 10.5],
+                                               't_%s_et_data' % label, ['t_%s_dm0_et_data' % label, 't_%s_dm1_et_data' % label, 't_%s_dm10_et_data' % label])
+
+            wsptools.SafeWrapHist(w, ['t_pt'], wsptools.TGraphAsymmErrorsToTH1DForTaus(
+                tau_et_file.Get('mc_%s' % label)), name='t_%s_et_mc' % label)
+
+            w.function('t_%s_dm0_et_data' % label).setInterpolationOrder(interpOrder)
+            w.function('t_%s_dm1_et_data' % label).setInterpolationOrder(interpOrder)
+            w.function('t_%s_dm10_et_data' % label).setInterpolationOrder(interpOrder)
+            w.function('t_%s_et_mc' % label).setInterpolationOrder(interpOrder)
+
+            w.factory('expr::t_%s_et_ratio("@0/@1", t_%s_et_data, t_%s_et_mc)' % (label, label, label))
+
+        w.factory('expr::t_%s_%s_et_data("TMath::Abs(@0) < 1.5 ? @1 : @2", t_eta[0], t_%s_barrel_%s_et_data, t_%s_endcap_%s_et_data)' %
+            (tautype, iso, tautype, iso, tautype, iso))
+        w.factory('expr::t_%s_%s_et_mc("TMath::Abs(@0) < 1.5 ? @1 : @2", t_eta[0], t_%s_barrel_%s_et_mc, t_%s_endcap_%s_et_mc)' %
+            (tautype, iso, tautype, iso, tautype, iso))
+        w.factory('expr::t_%s_%s_et_ratio("TMath::Abs(@0) < 1.5 ? @1 : @2", t_eta[0], t_%s_barrel_%s_et_ratio, t_%s_endcap_%s_et_ratio)' %
+            (tautype, iso, tautype, iso, tautype, iso))
+
+
+tau_et_file.Close()
+
 
 ### LO DYJetsToLL Z mass vs pT correction
 histsToWrap = [
@@ -581,5 +673,5 @@ for task in histsToWrap:
 w.importClassCode('CrystalBallEfficiency')
 
 w.Print()
-w.writeToFile('htt_scalefactors_v16_5.root')
+w.writeToFile('htt_scalefactors_v16_5_embed_v1.root')
 w.Delete()
