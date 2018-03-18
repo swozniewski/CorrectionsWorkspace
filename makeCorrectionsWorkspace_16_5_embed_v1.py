@@ -532,6 +532,11 @@ params = ttbar_fit.GetParameters()
 w.factory('expr::t_pt_max80("min(80,@0)",t_pt[0])')
 w.factory('expr::t_jetfake_ttbar_ratio("%f+%f*@0",t_pt_max80)' % (params[0],params[1]))
 
+wjet_fit = GetFromTFile(loc+'/taufakes_mt.root:ratio_pol1')
+params = wjet_fit.GetParameters()
+w.factory('expr::t_jetfake_wjet_ratio("%f+%f*@0",t_pt_max400)' % (params[0],params[1]))
+
+
 ### KIT tau ID scale factors
 loc = 'inputs/KIT/tau_id_sfs_2016.root:'
 histsToWrap = [
