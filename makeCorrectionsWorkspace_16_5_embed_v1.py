@@ -321,6 +321,13 @@ for t in ['idiso0p10_KITbins_desy', 'idiso0p1_desy', 'idiso0p15_desy', 'idiso_ai
 loc = 'inputs/ICSF/'
 
 histsToWrap = [
+    (loc+'TauTau/MC_trig_correction.root:hist', 'doubletau_corr')
+]
+for task in histsToWrap:
+    wsptools.SafeWrapHist(w, ['dR'],
+                          GetFromTFile(task[0]), name=task[1])
+
+histsToWrap = [
     (loc+'MuMu8/muon_SFs.root:trg_data', 'm_sel_trg8_1_data'),
     (loc+'MuMu17/muon_SFs.root:trg_data', 'm_sel_trg17_1_data')
 ]
@@ -536,6 +543,20 @@ w.factory('expr::e_idiso_em_ic_ratio("min(1.99,@0/(@1*@2))", e_idiso0p15_desy_da
 w.factory('expr::e_idiso_em_ic_embed_ratio("min(1.99,@0/(@1*@2))", e_idiso0p15_desy_data, e_iso_em_ic_embed, e_id_em_ic_embed)') # data part here is taken from DESY measurments 
 
 
+## IC em qcd os/ss weights
+
+w.factory('expr::em_qcd_0jet("0.9176*(2.895-0.1738*@0)",dR)')
+w.factory('expr::em_qcd_1jet("0.9176*(3.201-0.305*@0)",dR)')
+w.factory('expr::em_qcd_2jet("0.9176*(3.128-0.3458*@0)",dR)')
+w.factory('expr::em_qcd_0jet_shapeup("0.9176*(2.895 -0.2354*@0)",dR)')
+w.factory('expr::em_qcd_0jet_shapedown("0.9176*(2.895 -0.1122*@0)",dR)')
+w.factory('expr::em_qcd_1jet_shapeup("0.9176*(3.201-0.352*@0)",dR)')
+w.factory('expr::em_qcd_1jet_shapedown("0.9176*(3.201-0.258*@0)",dR)')
+w.factory('expr::em_qcd_2jet_shapeup("0.9176*(3.128-0.4199*@0)",dR)')
+w.factory('expr::em_qcd_2jet_shapedown("0.9176*(3.128-0.2717*@0)",dR)')
+
+wsptools.MakeBinnedCategoryFuncMap(w, 'njets', [0,1,2,10000],
+                                   'em_qcd_osss_binned', ['em_qcd_0jet','em_qcd_1jet', 'em_qcd_2jet'])
 ## IC jet->tau SFs
 
 loc = 'inputs/ICSF/faketaus/'
