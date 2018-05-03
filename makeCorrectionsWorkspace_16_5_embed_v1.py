@@ -545,15 +545,15 @@ w.factory('expr::e_idiso_em_ic_embed_ratio("min(1.99,@0/(@1*@2))", e_idiso0p15_d
 
 ## IC em qcd os/ss weights
 
-w.factory('expr::em_qcd_0jet("0.9176*(2.895-0.1738*@0)",dR)')
-w.factory('expr::em_qcd_1jet("0.9176*(3.201-0.305*@0)",dR)')
-w.factory('expr::em_qcd_2jet("0.9176*(3.128-0.3458*@0)",dR)')
-w.factory('expr::em_qcd_0jet_shapeup("0.9176*(2.895 -0.2354*@0)",dR)')
-w.factory('expr::em_qcd_0jet_shapedown("0.9176*(2.895 -0.1122*@0)",dR)')
-w.factory('expr::em_qcd_1jet_shapeup("0.9176*(3.201-0.352*@0)",dR)')
-w.factory('expr::em_qcd_1jet_shapedown("0.9176*(3.201-0.258*@0)",dR)')
-w.factory('expr::em_qcd_2jet_shapeup("0.9176*(3.128-0.4199*@0)",dR)')
-w.factory('expr::em_qcd_2jet_shapedown("0.9176*(3.128-0.2717*@0)",dR)')
+w.factory('expr::em_qcd_0jet(0.909211*(2.895-0.1738*@0)",dR)')
+w.factory('expr::em_qcd_1jet("0.909211*(3.201-0.305*@0)",dR)')
+w.factory('expr::em_qcd_2jet("0.909211*(3.128-0.3458*@0)",dR)')
+w.factory('expr::em_qcd_0jet_shapeup("0.909211*(2.895 -0.2354*@0)",dR)')
+w.factory('expr::em_qcd_0jet_shapedown("0.909211*(2.895 -0.1122*@0)",dR)')
+w.factory('expr::em_qcd_1jet_shapeup("0.909211*(3.201-0.352*@0)",dR)')
+w.factory('expr::em_qcd_1jet_shapedown("0.909211*(3.201-0.258*@0)",dR)')
+w.factory('expr::em_qcd_2jet_shapeup("0.909211*(3.128-0.4199*@0)",dR)')
+w.factory('expr::em_qcd_2jet_shapedown("0.909211*(3.128-0.2717*@0)",dR)')
 
 wsptools.MakeBinnedCategoryFuncMap(w, 'njets', [0,1,2,10000],
                                    'em_qcd_osss_binned', ['em_qcd_0jet','em_qcd_1jet', 'em_qcd_2jet'])
