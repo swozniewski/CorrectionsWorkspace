@@ -555,8 +555,29 @@ w.factory('expr::em_qcd_1jet_shapedown("0.909211*(3.201-0.258*@0)",dR)')
 w.factory('expr::em_qcd_2jet_shapeup("0.909211*(3.128-0.4199*@0)",dR)')
 w.factory('expr::em_qcd_2jet_shapedown("0.909211*(3.128-0.2717*@0)",dR)')
 
+w.factory('expr::em_qcd_0jet_rateup(@0 + 0.909211*0.203",em_qcd_0jet)')
+w.factory('expr::em_qcd_0jet_ratedown(@0 - 0.909211*0.203",em_qcd_0jet)')
+w.factory('expr::em_qcd_1jet_rateup("@0 + 0.909211*0.131)",em_qcd_1jet)')
+w.factory('expr::em_qcd_1jet_ratedown("@0 - 0.909211*0.131)",em_qcd_1jet)')
+w.factory('expr::em_qcd_2jet_rateup("@0 + 0.909211*0.190)",em_qcd_2jet)')
+w.factory('expr::em_qcd_2jet_ratedown("@0 - 0.909211*0.190)",em_qcd_2jet)')
+
 wsptools.MakeBinnedCategoryFuncMap(w, 'njets', [0,1,2,10000],
                                    'em_qcd_osss_binned', ['em_qcd_0jet','em_qcd_1jet', 'em_qcd_2jet'])
+
+wsptools.MakeBinnedCategoryFuncMap(w, 'njets', [0,1,2,10000],
+                                   'em_qcd_osss_shapeup_binned', ['em_qcd_0jet_shapeup','em_qcd_1jet_shapeup', 'em_qcd_2jet_shapeup'])
+
+wsptools.MakeBinnedCategoryFuncMap(w, 'njets', [0,1,2,10000],
+                                   'em_qcd_osss_shapedown_binned', ['em_qcd_0jet_shapedown','em_qcd_1jet_shapedown', 'em_qcd_2jet_shapedown'])
+
+wsptools.MakeBinnedCategoryFuncMap(w, 'njets', [0,1,2,10000],
+                                   'em_qcd_osss_rateup_binned', ['em_qcd_0jet_rateup','em_qcd_1jet_rateup', 'em_qcd_2jet_rateup'])
+
+wsptools.MakeBinnedCategoryFuncMap(w, 'njets', [0,1,2,10000],
+                                   'em_qcd_osss_ratedown_binned', ['em_qcd_0jet_ratedown','em_qcd_1jet_ratedown', 'em_qcd_2jet_ratedown'])
+
+
 ## IC jet->tau SFs
 
 loc = 'inputs/ICSF/faketaus/'
