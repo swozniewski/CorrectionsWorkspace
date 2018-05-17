@@ -23,7 +23,7 @@ ROOT.gROOT.LoadMacro("CrystalBallEfficiency.cxx+")
 w = ROOT.RooWorkspace('w')
 
 ### KIT electron/muon tag and probe results
-loc = 'inputs/KIT/embedded2017'
+loc = 'inputs/KIT/embedded2017_2'
 '''
 Sel_histsToWrap = [
     #~ (loc+'/ZmmTP_Data_Fits_muon_Selection_ID.root:muon_Selection_ID',                    'm_sel_id_data'),
@@ -37,7 +37,9 @@ SF_histsToWrap = [
     (loc+'/ZmmTP_Data_Fits_ID_pt_eta_bins.root:ID_pt_eta_bins',                    'm_id_data'),
     (loc+'/ZmmTP_Embedding_Fits_ID_pt_eta_bins.root:ID_pt_eta_bins',              'm_id_mc'),
     (loc+'/ZmmTP_Data_Fits_Iso_pt_eta_bins.root:Iso_pt_eta_bins',                    'm_iso_data'),
+    (loc+'/ZmmTP_Data_Fits_LooseIso_pt_eta_bins.root:LooseIso_pt_eta_bins',                    'm_looseiso_data'),
     (loc+'/ZmmTP_Embedding_Fits_Iso_pt_eta_bins.root:Iso_pt_eta_bins',              'm_iso_mc'),
+    (loc+'/ZmmTP_Embedding_Fits_LooseIso_pt_eta_bins.root:LooseIso_pt_eta_bins',              'm_looseiso_mc'),
     (loc+'/ZmmTP_Data_Fits_AIso1_pt_eta_bins.root:AIso1_pt_eta_bins',                    'm_aiso1_data'),
     (loc+'/ZmmTP_Embedding_Fits_AIso1_pt_eta_bins.root:AIso1_pt_eta_bins',              'm_aiso1_mc'),
     (loc+'/ZmmTP_Data_Fits_AIso2_pt_eta_bins.root:AIso2_pt_eta_bins',                    'm_aiso2_data'),
@@ -101,14 +103,14 @@ wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.10, 0.20, 0.50],'m_trg_bin
 for t in ['sel_idEmb','sel_vvliso']:
     w.factory('expr::m_%s_ratio("(1.0)/@0", m_%s_data)' % (t, t))
 '''
-for t in ['id', 'iso', 'trg', 'aiso1', 'aiso2']:
+for t in ['id', 'iso', 'trg', 'aiso1', 'aiso2', 'looseiso']:
     w.factory('expr::m_%s_ratio("min(1.99,(@0/@1))", m_%s_data, m_%s_mc)' % (t, t, t))
 
-for t in ['id', 'iso', 'trg', 'aiso1', 'aiso2']:
+for t in ['id', 'iso', 'trg', 'aiso1', 'aiso2', 'looseiso']:
     w.factory('expr::m_%s_data_eff_ratio("@0", m_%s_data)' % (t, t))
 
 ### KIT electron/muon tag and probe results
-loc = 'inputs/KIT/embedded2017'
+loc = 'inputs/KIT/embedded2017_2'
 '''
 Sel_histsToWrap = [
     #~ (loc+'/ZmmTP_Data_Fits_muon_Selection_ID.root:muon_Selection_ID',                    'e_sel_id_data'),
@@ -120,19 +122,21 @@ Sel_histsToWrap = [
 '''
 SF_histsToWrap = [
     (loc+'/ZeeTP_Data_Fits_ID_pt_eta_bins.root:ID_pt_eta_bins',                    'e_id_data'),
-    (loc+'/ZeeTP_EmbeddingElID_Fits_ID_pt_eta_bins.root:ID_pt_eta_bins',              'e_id_mc'),
+    (loc+'/ZeeTP_Embedding_Fits_ID_pt_eta_bins.root:ID_pt_eta_bins',              'e_id_mc'),
     (loc+'/ZeeTP_Data_Fits_Iso_pt_eta_bins.root:Iso_pt_eta_bins',                    'e_iso_data'),
-    (loc+'/ZeeTP_EmbeddingElID_Fits_Iso_pt_eta_bins.root:Iso_pt_eta_bins',              'e_iso_mc'),
+    (loc+'/ZeeTP_Data_Fits_LooseIso_pt_eta_bins.root:LooseIso_pt_eta_bins',                    'e_looseiso_data'),
+    (loc+'/ZeeTP_Embedding_Fits_Iso_pt_eta_bins.root:Iso_pt_eta_bins',              'e_iso_mc'),
+    (loc+'/ZeeTP_Embedding_Fits_LooseIso_pt_eta_bins.root:LooseIso_pt_eta_bins',              'e_looseiso_mc'),
     (loc+'/ZeeTP_Data_Fits_AIso1_pt_eta_bins.root:AIso1_pt_eta_bins',                    'e_aiso1_data'),
-    (loc+'/ZeeTP_EmbeddingElID_Fits_AIso1_pt_eta_bins.root:AIso1_pt_eta_bins',              'e_aiso1_mc'),
+    (loc+'/ZeeTP_Embedding_Fits_AIso1_pt_eta_bins.root:AIso1_pt_eta_bins',              'e_aiso1_mc'),
     (loc+'/ZeeTP_Data_Fits_AIso2_pt_eta_bins.root:AIso2_pt_eta_bins',                    'e_aiso2_data'),
-    (loc+'/ZeeTP_EmbeddingElID_Fits_AIso2_pt_eta_bins.root:AIso2_pt_eta_bins',              'e_aiso2_mc'),
+    (loc+'/ZeeTP_Embedding_Fits_AIso2_pt_eta_bins.root:AIso2_pt_eta_bins',              'e_aiso2_mc'),
     (loc+'/ZeeTP_Data_Fits_Trg_Iso_pt_eta_bins.root:Trg_Iso_pt_eta_bins',                    'e_trg_data'),
-    (loc+'/ZeeTP_EmbeddingElID_Fits_Trg_Iso_pt_eta_bins.root:Trg_Iso_pt_eta_bins',              'e_trg_mc'),
+    (loc+'/ZeeTP_Embedding_Fits_Trg_Iso_pt_eta_bins.root:Trg_Iso_pt_eta_bins',              'e_trg_mc'),
     (loc+'/ZeeTP_Data_Fits_Trg_AIso1_pt_bins_inc_eta.root:Trg_AIso1_pt_bins_inc_eta',                    'e_trg_aiso1_data'),
-    (loc+'/ZeeTP_EmbeddingElID_Fits_Trg_AIso1_pt_bins_inc_eta.root:Trg_AIso1_pt_bins_inc_eta',              'e_trg_aiso1_mc'),
+    (loc+'/ZeeTP_Embedding_Fits_Trg_AIso1_pt_bins_inc_eta.root:Trg_AIso1_pt_bins_inc_eta',              'e_trg_aiso1_mc'),
     (loc+'/ZeeTP_Data_Fits_Trg_AIso2_pt_bins_inc_eta.root:Trg_AIso2_pt_bins_inc_eta',                    'e_trg_aiso2_data'),
-    (loc+'/ZeeTP_EmbeddingElID_Fits_Trg_AIso2_pt_bins_inc_eta.root:Trg_AIso2_pt_bins_inc_eta',              'e_trg_aiso2_mc')
+    (loc+'/ZeeTP_Embedding_Fits_Trg_AIso2_pt_bins_inc_eta.root:Trg_AIso2_pt_bins_inc_eta',              'e_trg_aiso2_mc')
 ]
 #~ for task in Sel_histsToWrap:
     #~ wsptools.SafeWrapHist(w, ['expr::e_abs_eta("TMath::Abs(@0)",e_eta[0])','e_pt'],
@@ -156,10 +160,10 @@ wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.10, 0.20, 0.50],
                                    'e_trg_binned_data', ['e_trg_data', 'e_trg_aiso1_data', 'e_trg_aiso2_data'])
 wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.10, 0.20, 0.50],'e_trg_binned_mc', ['e_trg_mc', 'e_trg_aiso1_mc', 'e_trg_aiso2_mc'])
                                    
-for t in ['id', 'iso', 'trg', 'aiso1', 'aiso2','trg_binned','iso_binned']:
+for t in ['id', 'iso', 'trg', 'aiso1', 'aiso2','trg_binned','iso_binned', 'looseiso']:
     w.factory('expr::e_%s_ratio("min(1.99,(@0/@1))", e_%s_data, e_%s_mc)' % (t, t, t))
 
-for t in ['id', 'iso', 'trg', 'aiso1', 'aiso2']:
+for t in ['id', 'iso', 'trg', 'aiso1', 'aiso2', 'looseiso']:
     w.factory('expr::e_%s_data_eff_ratio("@0", e_%s_data)' % (t, t))
 
 ### Hadronic tau trigger efficiencies
