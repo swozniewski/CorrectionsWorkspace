@@ -28,8 +28,6 @@ histsToWrap = [
     (loc+'2017/SingleLepton/muon_SFs.root:ZLL_id_eff', 'm_id_mc'),
     (loc+'2017/SingleLepton/muon_SFs.root:data_iso_eff', 'm_iso_data'),
     (loc+'2017/SingleLepton/muon_SFs.root:ZLL_iso_eff', 'm_iso_mc'),
-    (loc+'2017/SingleLepton/muon_SFs.root:data_idiso_eff', 'm_idiso_data'),
-    (loc+'2017/SingleLepton/muon_SFs.root:ZLL_idiso_eff', 'm_idiso_mc'),
     (loc+'2017/SingleLepton/muon_SFs.root:data_trg_eff', 'm_trg_data'),
     (loc+'2017/SingleLepton/muon_SFs.root:ZLL_trg_eff', 'm_trg_mc')
 ]
@@ -41,14 +39,18 @@ for task in histsToWrap:
 wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
                                    'm_trg_binned_data', ['m_trg_data', 'm_trg_data', 'm_trg_data'])
 wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
-                                   'm_trg_mc', ['m_trg_mc', 'm_trg_mc', 'm_trg_mc'])
+                                   'm_trg_binned_mc', ['m_trg_mc', 'm_trg_mc', 'm_trg_mc'])
 
 wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
-                                   'm_idiso_binned_data', ['m_idiso_data', 'm_idiso_data', 'm_idiso_data'])
+                                   'm_iso_binned_data', ['m_iso_data', 'm_iso_data', 'm_iso_data'])
 wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
-                                   'm_idiso_mc', ['m_idiso_mc', 'm_idiso_mc', 'm_idiso_mc'])
+                                   'm_iso_binned_mc', ['m_iso_mc', 'm_iso_mc', 'm_iso_mc'])
 
-for t in ['trg', 'trg_binned', 'id', 'iso', 'idiso', 'idiso_binned' ]:
+for t in ['data', 'mc']:
+    w.factory('expr::m_idiso_%s("@0*@1", m_id_%s, m_iso_%s)' % (t, t, t))
+    w.factory('expr::m_idiso_binned_%s("@0*@1", m_id_%s, m_iso_binned_%s)' % (t, t, t))
+
+for t in ['trg', 'trg_binned', 'id', 'iso', 'iso_binned', 'idiso_binned' ]:
     w.factory('expr::m_%s_ratio("@0/@1", m_%s_data, m_%s_mc)' % (t, t, t))
         
 histsToWrap = [
@@ -56,8 +58,6 @@ histsToWrap = [
     (loc+'2017/SingleLepton/electron_SFs.root:ZLL_id_eff', 'e_id_mc'),
     (loc+'2017/SingleLepton/electron_SFs.root:data_iso_eff', 'e_iso_data'),
     (loc+'2017/SingleLepton/electron_SFs.root:ZLL_iso_eff', 'e_iso_mc'),
-    (loc+'2017/SingleLepton/electron_SFs.root:data_idiso_eff', 'e_idiso_data'),
-    (loc+'2017/SingleLepton/electron_SFs.root:ZLL_idiso_eff', 'e_idiso_mc'),
     (loc+'2017/SingleLepton/electron_SFs.root:data_trg_eff', 'e_trg_data'),
     (loc+'2017/SingleLepton/electron_SFs.root:ZLL_trg_eff', 'e_trg_mc')
 ]
@@ -69,15 +69,18 @@ for task in histsToWrap:
 wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.10, 0.30, 0.50],
                                    'e_trg_binned_data', ['e_trg_data', 'e_trg_data', 'e_trg_data'])
 wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
-                                   'e_trg_mc', ['e_trg_mc', 'e_trg_mc', 'e_trg_mc'])
+                                   'e_trg_binned_mc', ['e_trg_mc', 'e_trg_mc', 'e_trg_mc'])
 
 wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.10, 0.30, 0.50],
-                                   'e_idiso_binned_data', ['e_idiso_data', 'e_idiso_data', 'e_idiso_data'])
+                                   'e_iso_binned_data', ['e_iso_data', 'e_iso_data', 'e_iso_data'])
 wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.10, 0.30, 0.50],
-                                   'e_idiso_mc', ['e_idiso_mc', 'e_idiso_mc', 'e_idiso_mc'])
+                                   'e_iso_binned_mc', ['e_iso_mc', 'e_iso_mc', 'e_iso_mc'])
 
+for t in ['data', 'mc']:
+    w.factory('expr::e_idiso_%s("@0*@1", e_id_%s, e_iso_%s)' % (t, t, t))
+    w.factory('expr::e_idiso_binned_%s("@0*@1", e_id_%s, e_iso_binned_%s)' % (t, t, t))
 
-for t in ['trg', 'trg_binned', 'id', 'iso', 'idiso', 'idiso_binned' ]:
+for t in ['trg', 'trg_binned', 'id', 'iso', 'iso_binned', 'idiso_binned' ]:
     w.factory('expr::e_%s_ratio("@0/@1", e_%s_data, e_%s_mc)' % (t, t, t))
 
 
