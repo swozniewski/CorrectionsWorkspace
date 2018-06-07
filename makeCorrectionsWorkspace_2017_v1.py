@@ -68,12 +68,12 @@ for task in histsToWrap:
 
 wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.10, 0.30, 0.50],
                                    'e_trg_binned_data', ['e_trg_data', 'e_trg_data', 'e_trg_data'])
-wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
+wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.10, 0.30, 0.50],
                                    'e_trg_binned_mc', ['e_trg_mc', 'e_trg_mc', 'e_trg_mc'])
 
 wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.10, 0.30, 0.50],
                                    'e_iso_binned_data', ['e_iso_data', 'e_iso_data', 'e_iso_data'])
-wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.10, 0.30, 0.50],
+wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.10, 0.30, 0.50],
                                    'e_iso_binned_mc', ['e_iso_mc', 'e_iso_mc', 'e_iso_mc'])
 
 for t in ['data', 'mc']:
