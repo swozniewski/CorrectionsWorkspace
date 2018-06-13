@@ -17,7 +17,6 @@ ROOT.PyConfig.IgnoreCommandLineOptions = True
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 ROOT.RooWorkspace.imp = getattr(ROOT.RooWorkspace, 'import')
 ROOT.TH1.AddDirectory(0)
-ROOT.gROOT.LoadMacro("CrystalBallEfficiency.cxx+")
 
 w = ROOT.RooWorkspace('w')
 
@@ -145,27 +144,66 @@ loc = 'inputs/EGammaPOG'
 electron_trk_eff_hist = GetFromTFile(loc+'/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root:EGamma_SF2D')
 wsptools.SafeWrapHist(w, ['e_sceta','e_pt'], electron_trk_eff_hist, name='e_trk_ratio')
 
+### Tau Trigger scale factors from Tau EGammaPOG
+
+loc = 'inputs/TauTriggerSFs2017/'
+
+tau_id_wps=['medium','tight','vtight']
+
+for wp in tau_id_wps:
+  histsToWrap = [
+    (loc+'tauTriggerEfficiencies2017.root:hist_diTauTriggerEfficiency_%sTauMVA_DATA' % wp,  't_trg_pt_%s_tt_data' % wp),
+    (loc+'tauTriggerEfficiencies2017.root:hist_diTauTriggerEfficiency_%sTauMVA_MC'% wp,  't_trg_pt_%s_tt_mc' % wp),
+    (loc+'tauTriggerEfficiencies2017.root:hist_MuTauTriggerEfficiency_%sTauMVA_DATA'% wp,  't_trg_pt_%s_mt_data' % wp),
+    (loc+'tauTriggerEfficiencies2017.root:hist_MuTauTriggerEfficiency_%sTauMVA_MC' % wp,  't_trg_pt_%s_mt_mc' % wp),
+    (loc+'tauTriggerEfficiencies2017.root:hist_ETauTriggerEfficiency_%sTauMVA_DATA' % wp,  't_trg_pt_%s_et_data' % wp),
+    (loc+'tauTriggerEfficiencies2017.root:hist_ETauTriggerEfficiency_%sTauMVA_MC' % wp,  't_trg_pt_%s_et_mc' % wp),
+
+  ]
+  for task in histsToWrap:
+    wsptools.SafeWrapHist(w, ['t_pt'],
+                          GetFromTFile(task[0]), name=task[1])
+  
+  histsToWrap = [
+    (loc+'tauTriggerEfficiencies2017.root:diTau_%s_DATA' % wp,  't_trg_phieta_%s_tt_data' % wp),
+    (loc+'tauTriggerEfficiencies2017.root:diTau_%s_MC' % wp,  't_trg_phieta_%s_tt_mc' % wp),
+    (loc+'tauTriggerEfficiencies2017.root:diTau_%s_AVG_DATA' % wp,  't_trg_ave_phieta_%s_tt_data' % wp),
+    (loc+'tauTriggerEfficiencies2017.root:diTau_%s_AVG_MC' % wp,  't_trg_ave_phieta_%s_tt_mc' % wp),
+    (loc+'tauTriggerEfficiencies2017.root:muTau_%s_DATA' % wp,  't_trg_phieta_%s_mt_data' % wp),
+    (loc+'tauTriggerEfficiencies2017.root:muTau_%s_MC' % wp,  't_trg_phieta_%s_mt_mc' % wp),
+    (loc+'tauTriggerEfficiencies2017.root:muTau_%s_AVG_DATA' % wp,  't_trg_ave_phieta_%s_mt_data' % wp),
+    (loc+'tauTriggerEfficiencies2017.root:muTau_%s_AVG_MC' % wp,  't_trg_ave_phieta_%s_mt_mc' % wp),
+    (loc+'tauTriggerEfficiencies2017.root:eTau_%s_DATA' % wp,  't_trg_phieta_%s_et_data' % wp),
+    (loc+'tauTriggerEfficiencies2017.root:eTau_%s_MC' % wp,  't_trg_phieta_%s_et_mc' % wp),
+    (loc+'tauTriggerEfficiencies2017.root:eTau_%s_AVG_DATA' % wp,  't_trg_ave_phieta_%s_et_data' % wp),
+    (loc+'tauTriggerEfficiencies2017.root:eTau_%s_AVG_MC' % wp,  't_trg_ave_phieta_%s_et_mc' % wp)
+
+  ]
+  for task in histsToWrap:  
+    wsptools.SafeWrapHist(w, ['t_eta','t_phi'],
+                          GetFromTFile(task[0]), name=task[1])
+    
+  w.factory('expr::t_trg_%s_tt_data("@0*@1/@2", t_trg_pt_%s_tt_data, t_trg_phieta_%s_tt_data, t_trg_ave_phieta_%s_tt_data)' % (wp, wp, wp, wp))  
+  w.factory('expr::t_trg_%s_tt_mc("@0*@1/@2", t_trg_pt_%s_tt_mc, t_trg_phieta_%s_tt_mc, t_trg_ave_phieta_%s_tt_mc)' % (wp, wp, wp, wp))
+  
+  w.factory('expr::t_trg_%s_et_data("@0*@1/@2", t_trg_pt_%s_et_data, t_trg_phieta_%s_et_data, t_trg_ave_phieta_%s_et_data)' % (wp, wp, wp, wp))  
+  w.factory('expr::t_trg_%s_et_mc("@0*@1/@2", t_trg_pt_%s_et_mc, t_trg_phieta_%s_et_mc, t_trg_ave_phieta_%s_et_mc)' % (wp, wp, wp, wp))
+  
+  w.factory('expr::t_trg_%s_mt_data("@0*@1/@2", t_trg_pt_%s_mt_data, t_trg_phieta_%s_mt_data, t_trg_ave_phieta_%s_mt_data)' % (wp, wp, wp, wp))  
+  w.factory('expr::t_trg_%s_mt_mc("@0*@1/@2", t_trg_pt_%s_mt_mc, t_trg_phieta_%s_mt_mc, t_trg_ave_phieta_%s_mt_mc)' % (wp, wp, wp, wp))
+  
+  w.factory('expr::t_trg_%s_tt_ratio("@0/@1", t_trg_%s_tt_data, t_trg_%s_tt_mc)' % (wp, wp, wp))
+  w.factory('expr::t_trg_%s_et_ratio("@0/@1", t_trg_%s_et_data, t_trg_%s_et_mc)' % (wp, wp, wp))
+  w.factory('expr::t_trg_%s_mt_ratio("@0/@1", t_trg_%s_mt_data, t_trg_%s_mt_mc)' % (wp, wp, wp))
 
 ### LO DYJetsToLL Z mass vs pT correction
 histsToWrap = [
-    ('inputs/DYWeights/zpt_weights_summer2016_v5.root:zptmass_histo'                 , 'zpt_weight_nom'         ),
-    ('inputs/DYWeights/zpt_weights_summer2016_v5.root:zptmass_histo_ESUp'            , 'zpt_weight_esup'        ),
-    ('inputs/DYWeights/zpt_weights_summer2016_v5.root:zptmass_histo_ESDown'          , 'zpt_weight_esdown'      ),
-    ('inputs/DYWeights/zpt_weights_summer2016_v5.root:zptmass_histo_TTUp'            , 'zpt_weight_ttup'        ),
-    ('inputs/DYWeights/zpt_weights_summer2016_v5.root:zptmass_histo_TTDown'          , 'zpt_weight_ttdown'      ),
-    ('inputs/DYWeights/zpt_weights_summer2016_v5.root:zptmass_histo_StatM400pT0Up'   , 'zpt_weight_statpt0up'   ),
-    ('inputs/DYWeights/zpt_weights_summer2016_v5.root:zptmass_histo_StatM400pT0Down' , 'zpt_weight_statpt0down' ),
-    ('inputs/DYWeights/zpt_weights_summer2016_v5.root:zptmass_histo_StatM400pT40Up'  , 'zpt_weight_statpt40up'  ),
-    ('inputs/DYWeights/zpt_weights_summer2016_v5.root:zptmass_histo_StatM400pT40Down', 'zpt_weight_statpt40down'),
-    ('inputs/DYWeights/zpt_weights_summer2016_v5.root:zptmass_histo_StatM400pT80Up'  , 'zpt_weight_statpt80up'  ),
-    ('inputs/DYWeights/zpt_weights_summer2016_v5.root:zptmass_histo_StatM400pT80Down', 'zpt_weight_statpt80down')
+    ('inputs/DYWeights/dy_weights_2017.root:zptmass_histo'  , 'zpt_weight_nom'),
 ]
 
 for task in histsToWrap:
     wsptools.SafeWrapHist(w, ['z_gen_mass', 'z_gen_pt'],
                           GetFromTFile(task[0]), name=task[1])
-
-w.importClassCode('CrystalBallEfficiency')
 
 w.Print()
 w.writeToFile('htt_scalefactors_2017_v1.root')

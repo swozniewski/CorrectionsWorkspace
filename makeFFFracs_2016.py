@@ -123,9 +123,12 @@ procs = ['w','qcd','ttbar','realtau']
 for chan in ['mt','et']:
   for proc in procs: 
     wsptools.MakeBinnedCategoryFuncMap(w, 'pt_tt', [0., 200., 100000.],
-                                       '%s_%s_2jet' % (proc,chan), ['%s_%s_dijet_lowboost' % (proc,chan), '%s_%s_dijet_boosted' % (proc,chan)])
+                                       '%s_%s_dijet' % (proc,chan), ['%s_%s_dijet_lowboost' % (proc,chan), '%s_%s_dijet_boosted' % (proc,chan)])
     wsptools.MakeBinnedCategoryFuncMap(w, 'pt_tt', [0., 100., 100000.],
                                        '%s_%s_1jet' % (proc,chan), ['%s_%s_boosted_low' % (proc,chan), '%s_%s_boosted_high' % (proc,chan)])   
+
+    wsptools.MakeBinnedCategoryFuncMap(w, 'mjj', [0., 300., 100000.],
+                                       '%s_%s_2jet' % (proc,chan), ['%s_%s_1jet' % (proc,chan), '%s_%s_dijet' % (proc,chan)])
     
     if proc == 'realtau': extra = 'sf'
     else: extra = 'fracs'
@@ -136,13 +139,19 @@ for chan in ['mt','et']:
 procs = ['w','qcd','ttbar','dy','realtau']    
 for proc in procs: 
     wsptools.MakeBinnedCategoryFuncMap(w, 'pt_tt', [0., 200., 100000.],
-                                       '%s_tt_2jet_1' % (proc), ['%s_tt_dijet_lowboost_1' % (proc), '%s_tt_dijet_boosted_1' % (proc)])
+                                       '%s_tt_dijet_1' % (proc), ['%s_tt_dijet_lowboost_1' % (proc), '%s_tt_dijet_boosted_1' % (proc)])
     wsptools.MakeBinnedCategoryFuncMap(w, 'pt_tt', [0., 200., 100000.],
-                                       '%s_tt_2jet_2' % (proc), ['%s_tt_dijet_lowboost_2' % (proc), '%s_tt_dijet_boosted_2' % (proc)])
+                                       '%s_tt_dijet_2' % (proc), ['%s_tt_dijet_lowboost_2' % (proc), '%s_tt_dijet_boosted_2' % (proc)])
     wsptools.MakeBinnedCategoryFuncMap(w, 'pt_tt', [0., 100., 100000.],
                                        '%s_tt_1jet_1' % (proc), ['%s_tt_boosted_low_1' % (proc), '%s_tt_boosted_high_1' % (proc)])    
     wsptools.MakeBinnedCategoryFuncMap(w, 'pt_tt', [0., 100., 100000.],
                                        '%s_tt_1jet_2' % (proc), ['%s_tt_boosted_low_2' % (proc), '%s_tt_boosted_high_2' % (proc)]) 
+
+    wsptools.MakeBinnedCategoryFuncMap(w, 'mjj', [0., 300., 100000.],
+                                       '%s_tt_2jet_1' % (proc), ['%s_tt_1jet_1' % (proc), '%s_tt_dijet_1' % (proc)])
+    
+    wsptools.MakeBinnedCategoryFuncMap(w, 'mjj', [0., 300., 100000.],
+                                       '%s_tt_2jet_2' % (proc), ['%s_tt_1jet_2' % (proc), '%s_tt_dijet_2' % (proc)])
     
     if proc == 'realtau': extra = 'sf'
     else: extra = 'fracs'
