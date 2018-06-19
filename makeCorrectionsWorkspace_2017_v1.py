@@ -20,6 +20,8 @@ ROOT.TH1.AddDirectory(0)
 
 w = ROOT.RooWorkspace('w')
 
+# IC muon ID, iso, trigger SFs
+
 loc = 'inputs/ICSF/'
 
 histsToWrap = [
@@ -51,6 +53,24 @@ for t in ['data', 'mc']:
 
 for t in ['trg', 'trg_binned', 'id', 'iso', 'iso_binned', 'idiso_binned' ]:
     w.factory('expr::m_%s_ratio("@0/@1", m_%s_data, m_%s_mc)' % (t, t, t))
+
+# EGamma POG ID SFs
+
+loc = 'inputs/EGammaPOG/'
+
+histsToWrap = [
+    (loc+'gammaEffi.txt_EGM2D_runBCDEF_passingMVA94Xwp80noiso.root:EGamma_EffData2D', 'e_id_pog_data'),
+    (loc+'gammaEffi.txt_EGM2D_runBCDEF_passingMVA94Xwp80noiso.root:EGamma_EffMC2D', 'e_id_pog_mc')
+]
+
+for task in histsToWrap:
+    wsptools.SafeWrapHist(w, ['e_sceta', 'e_pt'],
+                          GetFromTFile(task[0]), name=task[1])
+
+
+# IC EGamma ID, iso, trigger SFs
+
+loc = 'inputs/ICSF/'
         
 histsToWrap = [
     (loc+'2017/SingleLepton/electron_SFs.root:data_id_eff', 'e_id_data'),
@@ -76,10 +96,10 @@ wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.10, 0.30, 0.50],
                                    'e_iso_binned_mc', ['e_iso_mc', 'e_iso_mc', 'e_iso_mc'])
 
 for t in ['data', 'mc']:
-    w.factory('expr::e_idiso_%s("@0*@1", e_id_%s, e_iso_%s)' % (t, t, t))
-    w.factory('expr::e_idiso_binned_%s("@0*@1", e_id_%s, e_iso_binned_%s)' % (t, t, t))
+    w.factory('expr::e_idiso_%s("@0*@1", e_id_pog_%s, e_iso_%s)' % (t, t, t))
+    w.factory('expr::e_idiso_binned_%s("@0*@1", e_id_pog_%s, e_iso_binned_%s)' % (t, t, t))
 
-for t in ['trg', 'trg_binned', 'id', 'iso', 'iso_binned', 'idiso_binned' ]:
+for t in ['trg', 'trg_binned', 'id', 'iso', 'iso_binned', 'idiso_binned', 'id_pog' ]:
     w.factory('expr::e_%s_ratio("@0/@1", e_%s_data, e_%s_mc)' % (t, t, t))
 
 
@@ -203,12 +223,20 @@ for wp in tau_id_wps:
   w.factory('expr::t_trg_%s_mt_ratio("@0/@1", t_trg_%s_mt_data, t_trg_%s_mt_mc)' % (wp, wp, wp))
 
 ### LO DYJetsToLL Z mass vs pT correction
+#histsToWrap = [
+#    ('inputs/DYWeights/dy_weights_2017.root:zptmass_histo'  , 'zpt_weight_nom'),
+#]
+
+#for task in histsToWrap:
+#    wsptools.SafeWrapHist(w, ['z_gen_mass', 'z_gen_pt'],
+#                          GetFromTFile(task[0]), name=task[1])
+
 histsToWrap = [
-    ('inputs/DYWeights/dy_weights_2017.root:zptmass_histo'  , 'zpt_weight_nom'),
+    ('inputs/DYWeights/zpt_weights_2017_1D.root:zpt_histo'  , 'zpt_weight_nom'),
 ]
 
 for task in histsToWrap:
-    wsptools.SafeWrapHist(w, ['z_gen_mass', 'z_gen_pt'],
+    wsptools.SafeWrapHist(w, ['z_gen_pt'],
                           GetFromTFile(task[0]), name=task[1])
 
 w.Print()
