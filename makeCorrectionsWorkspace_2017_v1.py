@@ -75,8 +75,8 @@ loc = 'inputs/ICSF/'
 histsToWrap = [
     (loc+'2017/SingleLepton/electron_SFs.root:data_id_eff', 'e_id_data'),
     (loc+'2017/SingleLepton/electron_SFs.root:ZLL_id_eff', 'e_id_mc'),
-    (loc+'2017/SingleLepton/electron_SFs.root:data_iso_eff', 'e_iso_data'),
-    (loc+'2017/SingleLepton/electron_SFs.root:ZLL_iso_eff', 'e_iso_mc'),
+    (loc+'2017/SingleLepton_rhoCorrected/electron_SFs.root:data_iso_eff', 'e_iso_data'),
+    (loc+'2017/SingleLepton_rhoCorrected/electron_SFs.root:ZLL_iso_eff', 'e_iso_mc'),
     (loc+'2017/SingleLepton/electron_SFs.root:data_trg_eff', 'e_trg_data'),
     (loc+'2017/SingleLepton/electron_SFs.root:ZLL_trg_eff', 'e_trg_mc')
 ]
