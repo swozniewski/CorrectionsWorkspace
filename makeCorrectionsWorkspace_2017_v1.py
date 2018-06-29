@@ -170,7 +170,7 @@ loc = 'inputs/EGammaPOG'
 electron_trk_eff_hist = GetFromTFile(loc+'/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root:EGamma_SF2D')
 wsptools.SafeWrapHist(w, ['e_sceta','e_pt'], electron_trk_eff_hist, name='e_trk_ratio')
 
-### Tau Trigger scale factors from Tau EGammaPOG
+### Tau Trigger scale factors from Tau POG
 
 loc = 'inputs/TauTriggerSFs2017/'
 
