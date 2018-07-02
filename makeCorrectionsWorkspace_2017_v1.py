@@ -228,9 +228,25 @@ for wp in tau_id_wps:
   w.factory('expr::t_trg_%s_et_ratio("@0/@1", t_trg_%s_et_data, t_trg_%s_et_mc)' % (wp, wp, wp))
   w.factory('expr::t_trg_%s_mt_ratio("@0/@1", t_trg_%s_mt_data, t_trg_%s_mt_mc)' % (wp, wp, wp))
 
+### Electron leg of etau cross trigger SF -- DESY (for now)
+loc = 'inputs/LeptonEfficiencies/Electron/Run2017/'
+
+desyHistsToWrap = [
+    (loc+'Electron_EleTau_Ele24.root',           'MC', 'e_trg_EleTau_Ele24Leg_desy_mc'),
+    (loc+'Electron_EleTau_Ele24.root',           'Data', 'e_trg_EleTau_Ele24Leg_desy_data'),
+]
+
+for task in desyHistsToWrap:
+    wsptools.SafeWrapHist(w, ['e_pt', 'expr::e_abs_eta("TMath::Abs(@0)",e_eta[0])'],
+                          wsptools.ProcessDESYLeptonSFs(task[0], task[1], task[2]), name=task[2])
+
+for t in ['trg_EleTau_Ele24Leg_desy']:
+    w.factory('expr::e_%s_ratio("@0/@1", e_%s_data, e_%s_mc)' % (t, t, t))
+
+
 ### LO DYJetsToLL Z mass vs pT correction
 #histsToWrap = [
-#    ('inputs/DYWeights/dy_weights_2017.root:zptmass_histo'  , 'zpt_weight_nom'),
+#    ('inputs/DYWeights/dy_weights_2017.root:zptmass_histo'  , 'zptmass_weight_nom'),
 #]
 
 #for task in histsToWrap:
