@@ -27,8 +27,8 @@ loc = 'inputs/ICSF/'
 # Embedded selection efficiencies
 
 histsToWrap = [
-    (loc+'MuMu8/muon_SFs.root:data_trg_eff', 'm_sel_trg8_1_data'),
-    (loc+'MuMu17/muon_SFs.root:data_trg_eff', 'm_sel_trg17_1_data')
+    (loc+'2017/EmbedSel/Mu8/muon_SFs.root:data_trg_eff', 'm_sel_trg8_1_data'),
+    (loc+'2017/EmbedSel/Mu17/muon_SFs.root:data_trg_eff', 'm_sel_trg17_1_data')
 ]
 
 for task in histsToWrap:
@@ -36,17 +36,20 @@ for task in histsToWrap:
                           GetFromTFile(task[0]), name=task[1])
 
 histsToWrap = [
-    (loc+'Mu8/muon_SFs.root:data_trg_eff', 'm_sel_trg8_2_data'),
-    (loc+'Mu17/muon_SFs.root:data_trg_eff', 'm_sel_trg17_2_data')
-    (loc+'Mu8/muon_SFs.root:data_id_eff', 'm_sel_id_data')
+    (loc+'2017/EmbedSel/Mu8/muon_SFs.root:data_trg_eff', 'm_sel_trg8_2_data'),
+    (loc+'2017/EmbedSel/Mu17/muon_SFs.root:data_trg_eff', 'm_sel_trg17_2_data'),
+    (loc+'2017/EmbedSel/Mu8/muon_SFs.root:data_id_eff', 'm_sel_idEmb_data')
 ]
 
 for task in histsToWrap:
     wsptools.SafeWrapHist(w, ['gt2_pt', 'expr::gt2_abs_eta("TMath::Abs(@0)",gt2_eta[0])'],
                           GetFromTFile(task[0]), name=task[1])
 
-    w.factory('expr::m_sel_trg_data("0.9959*(@0*@3+@1*@2-@1*@3)", m_sel_trg8_1_data, m_sel_trg17_1_data, m_sel_trg8_2_data, m_sel_trg17_2_data)')
-    w.factory('expr::m_sel_trg_ratio("min(1./@0,2)", m_sel_trg_data)')
+w.factory('expr::m_sel_trg_data("0.9959*(@0*@3+@1*@2-@1*@3)", m_sel_trg8_1_data, m_sel_trg17_1_data, m_sel_trg8_2_data, m_sel_trg17_2_data)')
+w.factory('expr::m_sel_trg_ratio("min(1./@0,2)", m_sel_trg_data)')
+
+w.factory('expr::m_sel_idEmb_ratio("min(1./@0,2)", m_sel_idEmb_data)')
+
 
 # trigegr SFs
 
