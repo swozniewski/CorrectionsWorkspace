@@ -103,6 +103,58 @@ for task in histsToWrap:
                           GetFromTFile(task[0]), name=task[1])
 
 
+# IC em trigger SF
+loc = 'inputs/ICSF/2017/'
+
+histsToWrap = [
+    (loc+'Mu23Ele12/electron_SFs.root:data_trg_eff', 'e_trg_12_data'),
+    (loc+'Mu23Ele12/electron_SFs.root:ZLL_trg_eff', 'e_trg_12_mc'),
+    (loc+'Mu8Ele23/electron_SFs.root:data_trg_eff', 'e_trg_23_data'),
+    (loc+'Mu8Ele23/electron_SFs.root:ZLL_trg_eff', 'e_trg_23_mc')
+]
+
+for task in histsToWrap:
+    wsptools.SafeWrapHist(w, ['e_pt', 'expr::e_abs_eta("TMath::Abs(@0)",e_eta[0])'],
+                          GetFromTFile(task[0]), name=task[1])
+
+wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.15, 0.30, 0.50],
+                                   'e_trg_binned_23_data', ['e_trg_23_data', 'e_trg_23_data', 'e_trg_23_data'])
+wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.15, 0.30, 0.50],
+                                   'e_trg_binned_23_mc', ['e_trg_23_mc', 'e_trg_23_mc', 'e_trg_23_mc'])
+wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.15, 0.30, 0.50],
+                                   'e_trg_binned_12_data', ['e_trg_12_data', 'e_trg_12_data', 'e_trg_12_data'])
+wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.15, 0.30, 0.50],
+                                   'e_trg_binned_12_mc', ['e_trg_12_mc', 'e_trg_12_mc', 'e_trg_12_mc'])
+
+for t in ['trg','trg_binned']:
+    w.factory('expr::e_%s_12_ratio("@0/@1", e_%s_12_data, e_%s_12_mc)' % (t, t, t))
+    w.factory('expr::e_%s_23_ratio("@0/@1", e_%s_23_data, e_%s_23_mc)' % (t, t, t))
+
+
+histsToWrap = [
+    (loc+'Mu23Ele12/muon_SFs.root:data_trg_eff', 'm_trg_23_data'),
+    (loc+'Mu23Ele12/muon_SFs.root:ZLL_trg_eff', 'm_trg_23_mc'),
+    (loc+'Mu8Ele23/muon_SFs.root:data_trg_eff', 'm_trg_8_data'),
+    (loc+'Mu8Ele23/muon_SFs.root:ZLL_trg_eff', 'm_trg_8_mc')
+]
+
+for task in histsToWrap:
+    wsptools.SafeWrapHist(w, ['m_pt', 'expr::m_abs_eta("TMath::Abs(@0)",m_eta[0])'],
+                          GetFromTFile(task[0]), name=task[1])
+
+wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
+                                   'm_trg_binned_23_data', ['m_trg_23_data', 'm_trg_23_data', 'm_trg_23_data'])
+wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
+                                   'm_trg_binned_23_mc', ['m_trg_23_mc', 'm_trg_23_mc', 'm_trg_23_mc'])
+wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
+                                   'm_trg_binned_8_data', ['m_trg_8_data', 'm_trg_8_data', 'm_trg_8_data'])
+wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
+                                   'm_trg_binned_8_mc', ['m_trg_8_mc', 'm_trg_8_mc', 'm_trg_8_mc'])
+
+for t in ['trg','trg_binned']:
+    w.factory('expr::m_%s_23_ratio("@0/@1", m_%s_23_data, m_%s_23_mc)' % (t, t, t))
+    w.factory('expr::m_%s_8_ratio("@0/@1", m_%s_8_data, m_%s_8_mc)' % (t, t, t))
+
 # IC EGamma ID, iso, trigger SFs
 
 loc = 'inputs/ICSF/'
@@ -136,7 +188,6 @@ for t in ['data', 'mc']:
 
 for t in ['trg', 'trg_binned', 'id', 'iso', 'iso_binned', 'idiso_binned', 'id_pog', 'idiso_pog', 'looseid_pog', 'looseidiso_pog' ]:
     w.factory('expr::e_%s_ratio("@0/@1", e_%s_data, e_%s_mc)' % (t, t, t))
-
 
 ## IC em qcd os/ss weights
 wsptools.SafeWrapHist(w, ['expr::m_pt_max100("min(@0,100)",m_pt[0])', 'expr::e_pt_max100("min(@0,100)",e_pt[0])'],  GetFromTFile(loc+'/em_qcd/em_qcd_factors_maiso.root:qcd_factors'), 'em_qcd_factors')
