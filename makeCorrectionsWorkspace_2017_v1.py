@@ -59,12 +59,15 @@ w.factory('expr::m_sel_idEmb_ratio("min(1./@0,20)", m_sel_idEmb_data)')
 # trigegr SFs
 
 histsToWrap = [
-    (loc+'2017/SingleLepton/muon_SFs.root:data_id_eff', 'm_id_data'),
-    (loc+'2017/SingleLepton/muon_SFs.root:ZLL_id_eff', 'm_id_mc'),
-    (loc+'2017/SingleLepton/muon_SFs.root:data_iso_eff', 'm_iso_data'),
-    (loc+'2017/SingleLepton/muon_SFs.root:ZLL_iso_eff', 'm_iso_mc'),
-    (loc+'2017/SingleLepton/muon_SFs.root:data_trg_eff', 'm_trg_data'),
-    (loc+'2017/SingleLepton/muon_SFs.root:ZLL_trg_eff', 'm_trg_mc')
+    (loc+'2017/SingleMuon/muon_SFs.root:data_id_eff', 'm_id_data'),
+    (loc+'2017/SingleMuon/muon_SFs.root:ZLL_id_eff', 'm_id_mc'),
+    (loc+'2017/SingleMuon/muon_SFs.root:embed_id_eff', 'm_id_embed'),
+    (loc+'2017/SingleMuon/muon_SFs.root:data_iso_eff', 'm_iso_data'),
+    (loc+'2017/SingleMuon/muon_SFs.root:ZLL_iso_eff', 'm_iso_mc'),
+    (loc+'2017/SingleMuon/muon_SFs.root:embed_iso_eff', 'm_iso_embed'),
+    (loc+'2017/SingleMuon/muon_SFs.root:data_trg_eff', 'm_trg_data'),
+    (loc+'2017/SingleMuon/muon_SFs.root:ZLL_trg_eff', 'm_trg_mc'),
+    (loc+'2017/SingleMuon/muon_SFs.root:embed_trg_eff', 'm_trg_embed')
 ]
 
 for task in histsToWrap:
@@ -75,18 +78,23 @@ wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
                                    'm_trg_binned_data', ['m_trg_data', 'm_trg_data', 'm_trg_data'])
 wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
                                    'm_trg_binned_mc', ['m_trg_mc', 'm_trg_mc', 'm_trg_mc'])
+wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
+                                   'm_trg_binned_embed', ['m_trg_embed', 'm_trg_embed', 'm_trg_embed'])
 
 wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
                                    'm_iso_binned_data', ['m_iso_data', 'm_iso_data', 'm_iso_data'])
 wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
                                    'm_iso_binned_mc', ['m_iso_mc', 'm_iso_mc', 'm_iso_mc'])
+wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
+                                   'm_iso_binned_embed', ['m_iso_embed', 'm_iso_embed', 'm_iso_embed'])
 
-for t in ['data', 'mc']:
+for t in ['data', 'mc', 'embed']:
     w.factory('expr::m_idiso_%s("@0*@1", m_id_%s, m_iso_%s)' % (t, t, t))
     w.factory('expr::m_idiso_binned_%s("@0*@1", m_id_%s, m_iso_binned_%s)' % (t, t, t))
 
 for t in ['trg', 'trg_binned', 'id', 'iso', 'iso_binned', 'idiso_binned' ]:
     w.factory('expr::m_%s_ratio("@0/@1", m_%s_data, m_%s_mc)' % (t, t, t))
+    w.factory('expr::m_%s_embed_ratio("@0/@1", m_%s_data, m_%s_embed)' % (t, t, t))
 
 # EGamma POG ID SFs
 
