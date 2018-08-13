@@ -112,7 +112,7 @@ histsToWrap = [
 ]
 
 for task in histsToWrap:
-    wsptools.SafeWrapHist(w, ['e_sceta', 'e_pt'],
+    wsptools.SafeWrapHist(w, ['e_eta', 'e_pt'],
                           GetFromTFile(task[0]), name=task[1])
 
 
@@ -173,12 +173,12 @@ for t in ['trg','trg_binned']:
 loc = 'inputs/ICSF/'
         
 histsToWrap = [
-    (loc+'2017/SingleLepton/electron_SFs.root:data_id_eff', 'e_id_data'),
-    (loc+'2017/SingleLepton/electron_SFs.root:ZLL_id_eff', 'e_id_mc'),
-    (loc+'2017/SingleLepton_rhoCorrected/electron_SFs.root:data_iso_eff', 'e_iso_data'),
-    (loc+'2017/SingleLepton_rhoCorrected/electron_SFs.root:ZLL_iso_eff', 'e_iso_mc'),
-    (loc+'2017/SingleLepton/electron_SFs.root:data_trg_eff', 'e_trg_data'),
-    (loc+'2017/SingleLepton/electron_SFs.root:ZLL_trg_eff', 'e_trg_mc')
+    (loc+'2017/SingleElectron/electron_SFs.root:data_id_eff', 'e_id_data'),
+    (loc+'2017/SingleElectron/electron_SFs.root:ZLL_id_eff', 'e_id_mc'),
+    (loc+'2017/SingleElectron/electron_SFs.root:data_iso_eff', 'e_iso_data'),
+    (loc+'2017/SingleElectron/electron_SFs.root:ZLL_iso_eff', 'e_iso_mc'),
+    (loc+'2017/SingleElectron/electron_SFs.root:data_trg_eff', 'e_trg_data'),
+    (loc+'2017/SingleElectron/electron_SFs.root:ZLL_trg_eff', 'e_trg_mc')
 ]
 
 for task in histsToWrap:
@@ -267,7 +267,7 @@ wsptools.SafeWrapHist(w, ['m_eta'], muon_trk_eff_hist, name='m_trk_ratio')
 loc = 'inputs/EGammaPOG'
 
 electron_trk_eff_hist = GetFromTFile(loc+'/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root:EGamma_SF2D')
-wsptools.SafeWrapHist(w, ['e_sceta','e_pt'], electron_trk_eff_hist, name='e_trk_ratio')
+wsptools.SafeWrapHist(w, ['e_eta','e_pt'], electron_trk_eff_hist, name='e_trk_ratio')
 
 ### Tau Trigger scale factors from Tau POG
 
