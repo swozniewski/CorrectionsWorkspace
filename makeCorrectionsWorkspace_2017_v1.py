@@ -277,12 +277,12 @@ tau_id_wps=['medium','tight','vtight']
 
 for wp in tau_id_wps:
   histsToWrap = [
-    (loc+'tauTriggerEfficiencies2017.root:hist_diTauTriggerEfficiency_%sTauMVA_DATA' % wp,  't_trg_pt_%s_tt_data' % wp),
-    (loc+'tauTriggerEfficiencies2017.root:hist_diTauTriggerEfficiency_%sTauMVA_MC'% wp,  't_trg_pt_%s_tt_mc' % wp),
-    (loc+'tauTriggerEfficiencies2017.root:hist_MuTauTriggerEfficiency_%sTauMVA_DATA'% wp,  't_trg_pt_%s_mt_data' % wp),
-    (loc+'tauTriggerEfficiencies2017.root:hist_MuTauTriggerEfficiency_%sTauMVA_MC' % wp,  't_trg_pt_%s_mt_mc' % wp),
-    (loc+'tauTriggerEfficiencies2017.root:hist_ETauTriggerEfficiency_%sTauMVA_DATA' % wp,  't_trg_pt_%s_et_data' % wp),
-    (loc+'tauTriggerEfficiencies2017.root:hist_ETauTriggerEfficiency_%sTauMVA_MC' % wp,  't_trg_pt_%s_et_mc' % wp),
+    (loc+'tauTriggerEfficiencies2017_New.root:hist_diTauTriggerEfficiency_%sTauMVA_DATA' % wp,  't_trg_pt_%s_tt_data' % wp),
+    (loc+'tauTriggerEfficiencies2017_New.root:hist_diTauTriggerEfficiency_%sTauMVA_MC'% wp,  't_trg_pt_%s_tt_mc' % wp),
+    (loc+'tauTriggerEfficiencies2017_New.root:hist_MuTauTriggerEfficiency_%sTauMVA_DATA'% wp,  't_trg_pt_%s_mt_data' % wp),
+    (loc+'tauTriggerEfficiencies2017_New.root:hist_MuTauTriggerEfficiency_%sTauMVA_MC' % wp,  't_trg_pt_%s_mt_mc' % wp),
+    (loc+'tauTriggerEfficiencies2017_New.root:hist_ETauTriggerEfficiency_%sTauMVA_DATA' % wp,  't_trg_pt_%s_et_data' % wp),
+    (loc+'tauTriggerEfficiencies2017_New.root:hist_ETauTriggerEfficiency_%sTauMVA_MC' % wp,  't_trg_pt_%s_et_mc' % wp),
 
   ]
   for task in histsToWrap:
