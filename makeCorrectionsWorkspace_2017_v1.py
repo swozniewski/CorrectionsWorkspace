@@ -354,6 +354,10 @@ for task in histsToWrap:
     wsptools.SafeWrapHist(w, ['z_gen_pt'],
                           GetFromTFile(task[0]), name=task[1])
 
+# correction for quark mass dependence to ggH
+wsptools.SafeWrapHist(w, ['HpT'],  GetFromTFile('inputs/ICSF/ggH/top_mass_weights.root:pt_weight'), 'ggH_quarkmass_hist')
+w.factory('expr::ggH_quarkmass_corr("0.985*@0", ggH_quarkmass_hist)') # the constant factor is to ensure the normalization doesn't change it is sample specific (should also be re-derived for the 2017 samples!)
+
 w.Print()
 w.writeToFile('htt_scalefactors_2017_v1.root')
 w.Delete()
