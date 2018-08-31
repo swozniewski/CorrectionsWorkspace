@@ -175,10 +175,13 @@ loc = 'inputs/ICSF/'
 histsToWrap = [
     (loc+'2017/SingleElectron/electron_SFs.root:data_id_eff', 'e_id_data'),
     (loc+'2017/SingleElectron/electron_SFs.root:ZLL_id_eff', 'e_id_mc'),
+    (loc+'2017/SingleElectron/electron_SFs.root:embed_id_eff', 'e_id_embed'),
     (loc+'2017/SingleElectron/electron_SFs.root:data_iso_eff', 'e_iso_data'),
     (loc+'2017/SingleElectron/electron_SFs.root:ZLL_iso_eff', 'e_iso_mc'),
+    (loc+'2017/SingleElectron/electron_SFs.root:embed_iso_eff', 'e_iso_embed'),
     (loc+'2017/SingleElectron/electron_SFs.root:data_trg_eff', 'e_trg_data'),
-    (loc+'2017/SingleElectron/electron_SFs.root:ZLL_trg_eff', 'e_trg_mc')
+    (loc+'2017/SingleElectron/electron_SFs.root:ZLL_trg_eff', 'e_trg_mc'),
+    (loc+'2017/SingleElectron/electron_SFs.root:embed_trg_eff', 'e_trg_embed')
 ]
 
 for task in histsToWrap:
@@ -189,18 +192,27 @@ wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.10, 0.30, 0.50],
                                    'e_trg_binned_data', ['e_trg_data', 'e_trg_data', 'e_trg_data'])
 wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.10, 0.30, 0.50],
                                    'e_trg_binned_mc', ['e_trg_mc', 'e_trg_mc', 'e_trg_mc'])
+wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.10, 0.30, 0.50],
+                                   'e_trg_binned_embed', ['e_trg_embed', 'e_trg_embed', 'e_trg_embed'])
 
 wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.10, 0.30, 0.50],
                                    'e_iso_binned_data', ['e_iso_data', 'e_iso_data', 'e_iso_data'])
 wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.10, 0.30, 0.50],
                                    'e_iso_binned_mc', ['e_iso_mc', 'e_iso_mc', 'e_iso_mc'])
+wsptools.MakeBinnedCategoryFuncMap(w, 'e_iso', [0., 0.10, 0.30, 0.50],
+                                   'e_iso_binned_embed', ['e_iso_embed', 'e_iso_embed', 'e_iso_embed'])
 
 for t in ['data', 'mc']:
     w.factory('expr::e_idiso_%s("@0*@1", e_id_pog_%s, e_iso_%s)' % (t, t, t))
     w.factory('expr::e_idiso_binned_%s("@0*@1", e_id_pog_%s, e_iso_binned_%s)' % (t, t, t))
+w.factory('expr::e_idiso_embed("@0*@1", e_id_embed, e_iso_embed)')
+w.factory('expr::e_idiso_binned_embed("@0*@1", e_id_embed, e_iso_binned_embed)')
 
 for t in ['trg', 'trg_binned', 'id', 'iso', 'iso_binned', 'idiso_binned', 'id_pog', 'idiso_pog', 'looseid_pog', 'looseidiso_pog' ]:
     w.factory('expr::e_%s_ratio("@0/@1", e_%s_data, e_%s_mc)' % (t, t, t))
+for t in ['trg', 'trg_binned', 'id', 'iso', 'iso_binned', 'idiso_binned']:
+    w.factory('expr::e_%s_embed_ratio("@0/@1", e_%s_data, e_%s_embed)' % (t, t, t))
+
 
 ## IC em qcd os/ss weights
 loc = 'inputs/ICSF/'

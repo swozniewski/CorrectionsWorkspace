@@ -594,6 +594,19 @@ wsptools.MakeBinnedCategoryFuncMap(w, 't_dm', [-0.5, 0.5, 9.5, 10.5],
 wsptools.MakeBinnedCategoryFuncMap(w, 't_dm', [-0.5, 0.5, 9.5, 10.5],
                                    't_iso_mva_t_pt40_eta2p1_sf', ['t_iso_mva_t_dm0_pt40_eta2p1_sf', 't_iso_mva_t_dm1_pt40_eta2p1_sf', 't_iso_mva_t_dm10_pt40_eta2p1_sf'])
 
+### Hadronic tau trigger efficiencies for embedded samples by IC
+
+with open('inputs/ICSF/TauTau/embed_trg_fits.json') as jsonfile:
+    pars = json.load(jsonfile)
+    for dm in ['dm0', 'dm1', 'dm10']:
+      label = 'TightIso_%s' % (dm)
+      x = pars['embed_%s' % (label)]
+      w.factory('CrystalBallEfficiency::t_%s_tt_embed(t_pt[0],%g,%g,%g,%g,%g)' % (
+                    label, x['m_{0}'], x['sigma'], x['alpha'], x['n'], x['norm']
+                ))
+    label = 'TightIso'
+    wsptools.MakeBinnedCategoryFuncMap(w, 't_dm', [-0.5, 0.5, 9.5, 10.5],
+                                               't_%s_tt_embed' % label, ['t_%s_dm0_tt_embed' % label, 't_%s_dm1_tt_embed' % label, 't_%s_dm10_tt_embed' % label])
 
 ### Hadronic tau trigger efficiencies
 with open('inputs/triggerSF-Moriond17/di-tau/fitresults_tt_moriond2017.json') as jsonfile:
