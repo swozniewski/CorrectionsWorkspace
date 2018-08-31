@@ -370,7 +370,7 @@ for t in ['trg_EleTau_Ele24Leg_desy']:
 #                          GetFromTFile(task[0]), name=task[1])
 
 histsToWrap = [
-    ('inputs/DYWeights/zpt_weights_2017_1D.root:zpt_histo'  , 'zpt_weight_nom'),
+    ('inputs/DYWeights/zpt_weights_2017_1D.root:zpt_weight'  , 'zpt_weight_nom'),
 ]
 
 for task in histsToWrap:
