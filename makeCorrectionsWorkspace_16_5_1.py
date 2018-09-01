@@ -608,6 +608,20 @@ with open('inputs/ICSF/TauTau/embed_trg_fits.json') as jsonfile:
     wsptools.MakeBinnedCategoryFuncMap(w, 't_dm', [-0.5, 0.5, 9.5, 10.5],
                                                't_%s_tt_embed' % label, ['t_%s_dm0_tt_embed' % label, 't_%s_dm1_tt_embed' % label, 't_%s_dm10_tt_embed' % label])
 
+interpOrder = 1
+tau_mt_file = ROOT.TFile('inputs/ICSF/TauTau/embed_tau_trig_eff_mt.root')
+for region in ['barrel', 'endcap']:
+    label = '%s_TightIso' % (region)
+
+    wsptools.SafeWrapHist(w, ['t_pt'], wsptools.TGraphAsymmErrorsToTH1DForTaus(
+        tau_mt_file.Get('eff_%s' % region)), name='t_%s_mt_embed' % label)
+
+    w.function('t_%s_mt_embed' % label).setInterpolationOrder(interpOrder)
+
+w.factory('expr::t_TightIso_mt_embed("TMath::Abs(@0) < 1.5 ? @1 : @2", t_eta[0], t_barrel_TightIso_mt_embed, t_endcap_TightIso_mt_embed)')
+tau_mt_file.Close()    
+
+
 ### Hadronic tau trigger efficiencies
 with open('inputs/triggerSF-Moriond17/di-tau/fitresults_tt_moriond2017.json') as jsonfile:
     pars = json.load(jsonfile)
