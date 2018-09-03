@@ -598,27 +598,30 @@ wsptools.MakeBinnedCategoryFuncMap(w, 't_dm', [-0.5, 0.5, 9.5, 10.5],
 
 with open('inputs/ICSF/TauTau/embed_trg_fits.json') as jsonfile:
     pars = json.load(jsonfile)
-    for dm in ['dm0', 'dm1', 'dm10']:
-      label = 'TightIso_%s' % (dm)
-      x = pars['embed_%s' % (label)]
-      w.factory('CrystalBallEfficiency::t_%s_tt_embed(t_pt[0],%g,%g,%g,%g,%g)' % (
-                    label, x['m_{0}'], x['sigma'], x['alpha'], x['n'], x['norm']
-                ))
-    label = 'TightIso'
-    wsptools.MakeBinnedCategoryFuncMap(w, 't_dm', [-0.5, 0.5, 9.5, 10.5],
-                                               't_%s_tt_embed' % label, ['t_%s_dm0_tt_embed' % label, 't_%s_dm1_tt_embed' % label, 't_%s_dm10_tt_embed' % label])
+    for iso in ['Vloose','Loose','Medium','Tight']:
+      for dm in ['dm0', 'dm1', 'dm10']:
+        label = '%sIso_%s' % (iso,dm)
+        x = pars['embed_%s' % (label)]
+        w.factory('CrystalBallEfficiency::t_%s_tt_embed(t_pt[0],%g,%g,%g,%g,%g)' % (
+                      label, x['m_{0}'], x['sigma'], x['alpha'], x['n'], x['norm']
+                  ))
+      label = '%sIso' % iso
+      wsptools.MakeBinnedCategoryFuncMap(w, 't_dm', [-0.5, 0.5, 9.5, 10.5],
+                                                 't_%s_tt_embed' % label, ['t_%s_dm0_tt_embed' % label, 't_%s_dm1_tt_embed' % label, 't_%s_dm10_tt_embed' % label])
 
 interpOrder = 1
 tau_mt_file = ROOT.TFile('inputs/ICSF/TauTau/embed_tau_trig_eff_mt.root')
-for region in ['barrel', 'endcap']:
-    label = '%s_TightIso' % (region)
 
-    wsptools.SafeWrapHist(w, ['t_pt'], wsptools.TGraphAsymmErrorsToTH1DForTaus(
-        tau_mt_file.Get('eff_%s' % region)), name='t_%s_mt_embed' % label)
-
-    w.function('t_%s_mt_embed' % label).setInterpolationOrder(interpOrder)
-
-w.factory('expr::t_TightIso_mt_embed("TMath::Abs(@0) < 1.5 ? @1 : @2", t_eta[0], t_barrel_TightIso_mt_embed, t_endcap_TightIso_mt_embed)')
+for iso in ['Vloose', 'Loose', 'Medium', 'Tight']:
+  for region in ['barrel', 'endcap']:
+      label = '%s_%sIso' % (region,iso)
+  
+      wsptools.SafeWrapHist(w, ['t_pt'], wsptools.TGraphAsymmErrorsToTH1DForTaus(
+          tau_mt_file.Get('eff_%siso_%s' % (iso.lower(),region))), name='t_%s_mt_embed' % label)
+  
+      w.function('t_%s_mt_embed' % label).setInterpolationOrder(interpOrder)
+  
+  w.factory('expr::t_%sIso_mt_embed("TMath::Abs(@0) < 1.5 ? @1 : @2", t_eta[0], t_barrel_%sIso_mt_embed, t_endcap_%sIso_mt_embed)' % (iso,iso,iso))
 tau_mt_file.Close()    
 
 
