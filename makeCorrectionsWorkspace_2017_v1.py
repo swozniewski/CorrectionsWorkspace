@@ -330,18 +330,17 @@ for task in histsToWrap:
 histsToWrap = [
   (loc+'embed_tau_trig_eff_tt_tightiso_mcfull.root:eff_tightiso_eta', 't_trg_phieta_tight_tt_mcfull'),
   (loc+'embed_tau_trig_eff_tt_tightiso_mcfull.root:eff_tightiso_aveeta','t_trg_ave_phieta_tight_tt_mcfull'),
-  (loc+'embed_tau_trig_eff_tt_tightiso_mc.root:eff_tightiso_eta', 't_trg_phieta_tt_mccalo'),
+  (loc+'embed_tau_trig_eff_tt_tightiso_mc.root:eff_tightiso_eta', 't_trg_phieta_tight_tt_mccalo'),
   (loc+'embed_tau_trig_eff_tt_tightiso_mc.root:eff_tightiso_aveeta','t_trg_ave_phieta_tight_tt_mccalo' )
-
 ]
-
-w.factory('expr::t_trg_tight_tt_mcfull("@0*@1/@2", t_trg_pt_tight_tt_mcfull, t_trg_phieta_tight_tt_mcfull, t_trg_ave_phieta_tight_tt_mcfull)')
-w.factory('expr::t_trg_tight_tt_mccalo("@0*@1/@2", t_trg_pt_tight_tt_mccalo, t_trg_phieta_tight_tt_mccalo, t_trg_ave_phieta_tight_tt_mccalo)') 
-w.factory('expr::t_trg_tight_tt_mcclose("@0/@1", t_trg_tight_tt_mcfull, t_trg_tight_tt_mccalo')
 
 for task in histsToWrap:
   wsptools.SafeWrapHist(w, ['t_eta'],
                         GetFromTFile(task[0]), name=task[1])
+
+w.factory('expr::t_trg_tight_tt_mcfull("@0*@1/@2", t_trg_pt_tight_tt_mcfull, t_trg_phieta_tight_tt_mcfull, t_trg_ave_phieta_tight_tt_mcfull)')
+w.factory('expr::t_trg_tight_tt_mccalo("@0*@1/@2", t_trg_pt_tight_tt_mccalo, t_trg_phieta_tight_tt_mccalo, t_trg_ave_phieta_tight_tt_mccalo)') 
+w.factory('expr::t_trg_tight_tt_mcclose("@0/@1", t_trg_tight_tt_mcfull, t_trg_tight_tt_mccalo)')
 
 
 ### Tau Trigger scale factors from Tau POG
