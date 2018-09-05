@@ -294,8 +294,6 @@ wsptools.SafeWrapHist(w, ['e_eta','e_pt'], electron_trk_eff_hist, name='e_trk_ra
 
 ## Tau Trigger efficiencies for embedded samples from IC
 
-#inputs/ICSF/2017/TauTrg
-
 loc = 'inputs/ICSF/2017/TauTrg/'
 tau_id_wps=['vloose','loose','medium','tight']
 
@@ -319,6 +317,31 @@ for wp in tau_id_wps:
 
   w.factory('expr::t_trg_%s_tt_embed("@0*@1/@2", t_trg_pt_%s_tt_embed, t_trg_phieta_%s_tt_embed, t_trg_ave_phieta_%s_tt_embed)' % (wp, wp, wp, wp))
 
+# MC effieicies for closure tests
+histsToWrap = [
+    (loc+'embed_tau_trig_eff_tt_tightiso_mcfull.root:eff_tightiso_pt' , 't_trg_pt_tight_tt_mcfull' ),
+    (loc+'embed_tau_trig_eff_tt_tightiso_mc.root:eff_tightiso_pt' , 't_trg_pt_tight_tt_mccalo' )
+]
+
+for task in histsToWrap:
+  wsptools.SafeWrapHist(w, ['t_pt'],
+                        GetFromTFile(task[0]), name=task[1])
+
+histsToWrap = [
+  (loc+'embed_tau_trig_eff_tt_tightiso_mcfull.root:eff_tightiso_eta', 't_trg_phieta_tight_tt_mcfull'),
+  (loc+'embed_tau_trig_eff_tt_tightiso_mcfull.root:eff_tightiso_aveeta','t_trg_ave_phieta_tight_tt_mcfull'),
+  (loc+'embed_tau_trig_eff_tt_tightiso_mc.root:eff_tightiso_eta', 't_trg_phieta_tt_mccalo'),
+  (loc+'embed_tau_trig_eff_tt_tightiso_mc.root:eff_tightiso_aveeta','t_trg_ave_phieta_tight_tt_mccalo' )
+
+]
+
+w.factory('expr::t_trg_tight_tt_mcfull("@0*@1/@2", t_trg_pt_tight_tt_mcfull, t_trg_phieta_tight_tt_mcfull, t_trg_ave_phieta_tight_tt_mcfull)')
+w.factory('expr::t_trg_tight_tt_mccalo("@0*@1/@2", t_trg_pt_tight_tt_mccalo, t_trg_phieta_tight_tt_mccalo, t_trg_ave_phieta_tight_tt_mccalo)') 
+w.factory('expr::t_trg_tight_tt_mcclose("@0/@1", t_trg_tight_tt_mcfull, t_trg_tight_tt_mccalo')
+
+for task in histsToWrap:
+  wsptools.SafeWrapHist(w, ['t_eta'],
+                        GetFromTFile(task[0]), name=task[1])
 
 
 ### Tau Trigger scale factors from Tau POG
