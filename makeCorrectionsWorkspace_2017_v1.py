@@ -292,6 +292,35 @@ loc = 'inputs/EGammaPOG'
 electron_trk_eff_hist = GetFromTFile(loc+'/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root:EGamma_SF2D')
 wsptools.SafeWrapHist(w, ['e_eta','e_pt'], electron_trk_eff_hist, name='e_trk_ratio')
 
+## Tau Trigger efficiencies for embedded samples from IC
+
+#inputs/ICSF/2017/TauTrg
+
+loc = 'inputs/ICSF/2017/TauTrg/'
+tau_id_wps=['vloose','loose','medium','tight']
+
+for wp in tau_id_wps:
+  histsToWrap = [
+    (loc+'embed_tau_trig_eff_tt.root:eff_%siso_pt' % wp, 't_trg_pt_%s_tt_embed' % wp)
+  ]
+
+  for task in histsToWrap:
+    wsptools.SafeWrapHist(w, ['t_pt'],
+                          GetFromTFile(task[0]), name=task[1])
+
+  histsToWrap = [
+    (loc+'embed_tau_trig_eff_tt.root:eff_%siso_eta' % wp, 't_trg_phieta_%s_tt_embed' % wp),
+    (loc+'embed_tau_trig_eff_tt.root:eff_%siso_aveeta' % wp,'t_trg_ave_phieta_%s_tt_embed' % wp)
+  ]
+
+  for task in histsToWrap:
+    wsptools.SafeWrapHist(w, ['t_eta'],
+                          GetFromTFile(task[0]), name=task[1])
+
+  w.factory('expr::t_trg_%s_tt_embed("@0*@1/@2", t_trg_pt_%s_tt_embed, t_trg_phieta_%s_tt_embed, t_trg_ave_phieta_%s_tt_embed)' % (wp, wp, wp, wp))
+
+
+
 ### Tau Trigger scale factors from Tau POG
 
 loc = 'inputs/TauTriggerSFs2017/'
