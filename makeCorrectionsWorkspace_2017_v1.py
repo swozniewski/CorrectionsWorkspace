@@ -181,7 +181,10 @@ histsToWrap = [
     (loc+'2017/SingleElectron/electron_SFs.root:embed_iso_eff', 'e_iso_embed'),
     (loc+'2017/SingleElectron/electron_SFs.root:data_trg_eff', 'e_trg_data'),
     (loc+'2017/SingleElectron/electron_SFs.root:ZLL_trg_eff', 'e_trg_mc'),
-    (loc+'2017/SingleElectron/electron_SFs.root:embed_trg_eff', 'e_trg_embed')
+    (loc+'2017/SingleElectron/electron_SFs.root:embed_trg_eff', 'e_trg_embed'),
+    (loc+'2017/Ele24/electron_SFs.root:data_trg_eff', 'e_trg24_data'),
+    (loc+'2017/Ele24/electron_SFs.root:ZLL_trg_eff', 'e_trg24_mc'),
+    (loc+'2017/Ele24/electron_SFs.root:embed_trg_eff', 'e_trg24_embed')
 ]
 
 for task in histsToWrap:
@@ -208,9 +211,9 @@ for t in ['data', 'mc']:
 w.factory('expr::e_idiso_embed("@0*@1", e_id_embed, e_iso_embed)')
 w.factory('expr::e_idiso_binned_embed("@0*@1", e_id_embed, e_iso_binned_embed)')
 
-for t in ['trg', 'trg_binned', 'id', 'iso', 'iso_binned', 'idiso_binned', 'id_pog', 'idiso_pog', 'looseid_pog', 'looseidiso_pog' ]:
+for t in ['trg', 'trg24', 'trg_binned', 'id', 'iso', 'iso_binned', 'idiso_binned', 'id_pog', 'idiso_pog', 'looseid_pog', 'looseidiso_pog' ]:
     w.factory('expr::e_%s_ratio("@0/@1", e_%s_data, e_%s_mc)' % (t, t, t))
-for t in ['trg', 'trg_binned', 'id', 'iso', 'iso_binned', 'idiso_binned']:
+for t in ['trg', 'trg24', 'trg_binned', 'id', 'iso', 'iso_binned', 'idiso_binned']:
     w.factory('expr::e_%s_embed_ratio("@0/@1", e_%s_data, e_%s_embed)' % (t, t, t))
 
 
