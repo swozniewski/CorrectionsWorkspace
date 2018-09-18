@@ -67,7 +67,13 @@ histsToWrap = [
     (loc+'2017/SingleMuon/muon_SFs.root:embed_iso_eff', 'm_iso_embed'),
     (loc+'2017/SingleMuon/muon_SFs.root:data_trg_eff', 'm_trg_data'),
     (loc+'2017/SingleMuon/muon_SFs.root:ZLL_trg_eff', 'm_trg_mc'),
-    (loc+'2017/SingleMuon/muon_SFs.root:embed_trg_eff', 'm_trg_embed')
+    (loc+'2017/SingleMuon/muon_SFs.root:embed_trg_eff', 'm_trg_embed'),
+    (loc+'2017/Mu20/muon20_cross_B/muon_SFs.root:data_trg_eff', 'm_trg20_runB_data'),
+    (loc+'2017/Mu20/muon20_cross_B/muon_SFs.root:ZLL_trg_eff', 'm_trg20_runB_mc'),
+    (loc+'2017/Mu20/muon20_cross_B/muon_SFs.root:embed_trg_eff', 'm_trg20_runB_embed'),
+    (loc+'2017/Mu20/muon20_noB/muon_SFs.root:data_trg_eff', 'm_trg20_runCtoF_data'),
+    (loc+'2017/Mu20/muon20_noB/muon_SFs.root:ZLL_trg_eff', 'm_trg20_runCtoF_mc'),
+    (loc+'2017/Mu20/muon20_noB/muon_SFs.root:embed_trg_eff', 'm_trg20_runCtoF_embed')
 ]
 
 for task in histsToWrap:
@@ -91,8 +97,11 @@ wsptools.MakeBinnedCategoryFuncMap(w, 'm_iso', [0., 0.15, 0.30, 0.50],
 for t in ['data', 'mc', 'embed']:
     w.factory('expr::m_idiso_%s("@0*@1", m_id_%s, m_iso_%s)' % (t, t, t))
     w.factory('expr::m_idiso_binned_%s("@0*@1", m_id_%s, m_iso_binned_%s)' % (t, t, t))
+    w.factory('expr::m_trg20_%s("0.1145*@0+0.8855*@1", m_trg20_runB_%s, m_trg20_runCtoF_%s)' % (t, t, t))
 
-for t in ['trg', 'trg_binned', 'id', 'iso', 'iso_binned', 'idiso_binned' ]:
+
+
+for t in ['trg', 'trg20', 'trg_binned', 'id', 'iso', 'iso_binned', 'idiso_binned' ]:
     w.factory('expr::m_%s_ratio("@0/@1", m_%s_data, m_%s_mc)' % (t, t, t))
     w.factory('expr::m_%s_embed_ratio("@0/@1", m_%s_data, m_%s_embed)' % (t, t, t))
 
