@@ -310,27 +310,29 @@ wsptools.SafeWrapHist(w, ['e_eta','e_pt'], electron_trk_eff_hist, name='e_trk_ra
 
 loc = 'inputs/ICSF/2017/TauTrg/'
 tau_id_wps=['vloose','loose','medium','tight']
+channels=['tt','et','mt']
 
-for wp in tau_id_wps:
-  histsToWrap = [
-    (loc+'embed_tau_trig_eff_tt.root:eff_%siso_pt' % wp, 't_trg_pt_%s_tt_embed' % wp)
-  ]
-
-  for task in histsToWrap:
-    wsptools.SafeWrapHist(w, ['t_pt'],
-                          GetFromTFile(task[0]), name=task[1])
-
-  histsToWrap = [
-    (loc+'embed_tau_trig_eff_tt.root:eff_%siso_eta' % wp, 't_trg_phieta_%s_tt_embed' % wp),
-    (loc+'embed_tau_trig_eff_tt.root:eff_%siso_aveeta' % wp,'t_trg_ave_phieta_%s_tt_embed' % wp)
-  ]
-
-  for task in histsToWrap:
-    wsptools.SafeWrapHist(w, ['t_eta'],
-                          GetFromTFile(task[0]), name=task[1])
-
-  w.factory('expr::t_trg_%s_tt_embed("@0*@1/@2", t_trg_pt_%s_tt_embed, t_trg_phieta_%s_tt_embed, t_trg_ave_phieta_%s_tt_embed)' % (wp, wp, wp, wp))
-
+for chan in channels:
+  for wp in tau_id_wps:
+    histsToWrap = [
+      (loc+'embed_tau_trig_eff_%s.root:eff_%siso_pt' % (chan,wp), 't_trg_pt_%s_%s_embed' % (wp,chan))
+    ]
+  
+    for task in histsToWrap:
+      wsptools.SafeWrapHist(w, ['t_pt'],
+                            GetFromTFile(task[0]), name=task[1])
+  
+    histsToWrap = [
+      (loc+'embed_tau_trig_eff_%s.root:eff_%siso_eta' % (chan,wp), 't_trg_phieta_%s_%s_embed' % (wp,chan)),
+      (loc+'embed_tau_trig_eff_%s.root:eff_%siso_aveeta' % (chan,wp),'t_trg_ave_phieta_%s_%s_embed' % (wp,chan))
+    ]
+  
+    for task in histsToWrap:
+      wsptools.SafeWrapHist(w, ['t_eta'],
+                            GetFromTFile(task[0]), name=task[1])
+  
+    w.factory('expr::t_trg_%s_%s_embed("@0*@1/@2", t_trg_pt_%s_%s_embed, t_trg_phieta_%s_%s_embed, t_trg_ave_phieta_%s_%s_embed)' % (wp, chan, wp, chan, wp, chan, wp, chan))
+  
 # MC effieicies for closure tests
 histsToWrap = [
     (loc+'embed_tau_trig_eff_tt_tightiso_mcfull.root:eff_tightiso_pt' , 't_trg_pt_tight_tt_mcfull' ),
