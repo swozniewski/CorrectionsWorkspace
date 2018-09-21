@@ -743,8 +743,14 @@ for task in histsToWrap:
                           GetFromTFile(task[0]), name=task[1])
 
 # correction for quark mass dependence to ggH
-wsptools.SafeWrapHist(w, ['HpT'],  GetFromTFile('inputs/ICSF/ggH/top_mass_weights.root:pt_weight_toponly'), 'ggH_quarkmass_hist')
+wsptools.SafeWrapHist(w, ['HpT'],  GetFromTFile('inputs/ICSF/ggH/quarkmass_uncerts.root:nom'), 'ggH_quarkmass_hist')
 w.factory('expr::ggH_quarkmass_corr("1.007*@0", ggH_quarkmass_hist)') # the constant factor is to ensure the normalization doesn't change - it is sample specific
+
+wsptools.SafeWrapHist(w, ['HpT'],  GetFromTFile('inputs/ICSF/ggH/quarkmass_uncerts.root:qup'), 'ggH_quarkmass_hist_up')
+w.factory('expr::ggH_quarkmass_corr_up("1.007*@0", ggH_quarkmass_hist_up)') 
+wsptools.SafeWrapHist(w, ['HpT'],  GetFromTFile('inputs/ICSF/ggH/quarkmass_uncerts.root:qdown'), 'ggH_quarkmass_hist_down')
+w.factory('expr::ggH_quarkmass_corr_down("1.007*@0", ggH_quarkmass_hist_down)')
+
 wsptools.SafeWrapHist(w, ['HpT'],  GetFromTFile('inputs/ICSF/ggH/top_mass_weights.root:pt_weight'), 'ggH_fullquarkmass_hist')
 w.factory('expr::ggH_fullquarkmass_corr("0.985*@0", ggH_fullquarkmass_hist)') # the constant factor is to ensure the normalization doesn't change - it is sample specific
 
