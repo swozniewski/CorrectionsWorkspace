@@ -2,6 +2,7 @@
 import ROOT
 from array import array
 import math
+import numpy as np
 
 # Boilerplate
 ROOT.PyConfig.IgnoreCommandLineOptions = True
@@ -50,9 +51,37 @@ def TGraphAsymmErrorsToTH1DForTaus(graph):
     # hist.Print('range')
     return hist
 
-def SafeWrapHist(wsp, binvars, hist, name=None, bound=True):
+def Convert2DOverflows(h):
+
+   nx = h.GetNbinsX()+1
+   xbins=[]
+   for i in range(1,nx+1):
+     xbins.append(h.GetXaxis().GetBinLowEdge(i))
+   xbins.append(xbins[nx-1]+h.GetXaxis().GetBinWidth(nx))
+
+   ny = h.GetNbinsY()+1
+   ybins=[]
+   for i in range(1,ny+1):
+     ybins.append(h.GetYaxis().GetBinLowEdge(i))
+   ybins.append(ybins[ny-1]+h.GetYaxis().GetBinWidth(ny))
+
+   name=h.GetName()
+   htmp = ROOT.TH2F(name, h.GetTitle(), nx, np.asarray(xbins), ny, np.asarray(ybins))
+   htmp.SetXTitle(h.GetXaxis().GetTitle())
+   htmp.SetYTitle(h.GetYaxis().GetTitle())
+   for i in range(1,nx+1): 
+     for j in range(1,ny+1):
+       htmp.Fill(htmp.GetXaxis().GetBinCenter(i),htmp.GetYaxis().GetBinCenter(j), h.GetBinContent(i,j))
+   htmp.SetEntries(h.GetEntries())
+   return htmp
+
+
+def SafeWrapHist(wsp, binvars, hist, name=None, bound=True, incOF=False):
     # Use the histogram name for this function unless a new name has
     # been specified
+
+    if len(binvars) == 2 and incOF: hist=Convert2DOverflows(hist)
+
     if name is None:
         name = hist.GetName()
     # Bit of technical RooFit thing:
@@ -69,6 +98,7 @@ def SafeWrapHist(wsp, binvars, hist, name=None, bound=True):
     f_arglist = ROOT.RooArgList()
     # Keep track of the relevant histogram axes (for the 1D, 2D or 3D cases)
     axes = [hist.GetXaxis()]
+
     if len(binvars) >= 2:
         axes.append(hist.GetYaxis())
     if len(binvars) >= 3:
