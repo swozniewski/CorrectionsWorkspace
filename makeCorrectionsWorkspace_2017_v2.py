@@ -492,7 +492,7 @@ for task in histsToWrap:
 ### KIT electron/muon tag and probe results
 
 # triggr SFs Muons from KIT
-loc = 'inputs/KIT/v17_4/'
+loc = 'inputs/KIT/v17_5/'
 
 
 histsToWrap = [
@@ -584,7 +584,7 @@ for t in ['trg24', 'trg24_binned', 'trg27', 'trg27_binned', 'trg24_27', 'trg24_2
     w.factory('expr::m_%s_embed_kit_ratio("min(10.,(@0/@1))", m_%s_kit_data, m_%s_kit_embed)' % (t, t, t))
 
 # trigger SFs Electrons from KIT
-loc = 'inputs/KIT/v17_4/'
+loc = 'inputs/KIT/v17_5/'
 
 histsToWrap = [
     (loc+'ZeeTP_Data_Fits_ID90_pt_eta_bins.root:ID90_pt_eta_bins',                'e_id90_kit_data'),
