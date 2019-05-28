@@ -72,7 +72,7 @@ for t in ['idiso_desy', 'trgEle25_desy']:
 
 # LO DYJetsToLL Z mass vs pT correction
 histsToWrap = [
-    ('inputs/DYWeights/zpt_weights_summer2016_v2.root:zptmass_histo', 'zpt_weight_nom')
+    ('inputs/DYWeights/zpt_weights_summer2016_v2.root:zptmass_histo', 'zptmass_weight_nom')
 ]
 
 for task in histsToWrap:
