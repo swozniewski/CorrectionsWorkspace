@@ -22,6 +22,29 @@ ROOT.gROOT.LoadMacro("CrystalBallEfficiency.cxx+")
 
 w = ROOT.RooWorkspace('w')
 
+# Hadronic tau trigger efficiencies
+with open('inputs/triggerSF-Moriond17/di-tau/fitresults_tt_moriond2017.json') as jsonfile:
+    pars = json.load(jsonfile)
+    for tautype in ['genuine', 'fake']:
+        for iso in ['VLooseIso', 'LooseIso', 'MediumIso', 'TightIso', 'VTightIso', 'VVTightIso']:
+            for dm in ['dm0', 'dm1', 'dm10']:
+                label = '%s_%s_%s' % (tautype, iso, dm)
+                x = pars['data_%s' % (label)]
+                w.factory('CrystalBallEfficiency::t_%s_tt_data(t_pt[0],%g,%g,%g,%g,%g)' % (
+                    label, x['m_{0}'], x['sigma'], x['alpha'], x['n'], x['norm']
+                ))
+
+                x = pars['mc_%s' % (label)]
+                w.factory('CrystalBallEfficiency::t_%s_tt_mc(t_pt[0],%g,%g,%g,%g,%g)' % (
+                    label, x['m_{0}'], x['sigma'], x['alpha'], x['n'], x['norm']
+                ))
+            label = '%s_%s' % (tautype, iso)
+            wsptools.MakeBinnedCategoryFuncMap(w, 't_dm', [-0.5, 0.5, 9.5, 10.5],
+                                               't_%s_tt_data' % label, ['t_%s_dm0_tt_data' % label, 't_%s_dm1_tt_data' % label, 't_%s_dm10_tt_data' % label])
+            wsptools.MakeBinnedCategoryFuncMap(w, 't_dm', [-0.5, 0.5, 9.5, 10.5],
+                                               't_%s_tt_mc' % label, ['t_%s_dm0_tt_mc' % label, 't_%s_dm1_tt_mc' % label, 't_%s_dm10_tt_mc' % label])
+            w.factory('expr::t_%s_tt_ratio("@0/@1", t_%s_tt_data, t_%s_tt_mc)' %
+                      (label, label, label))
 
 # ### KIT electron/muon tag and probe results
 # TODO measure
@@ -43,12 +66,18 @@ desyHistsToWrap = [
      'MC',   'm_trgIsoMu24_desy_mc'),
     (loc+'/Muon/Run2016_legacy/Muon_Run2016_legacy_IsoMu24.root',
      'Data', 'm_trgIsoMu24_desy_data'),
+
+    # old crosstrigger weights for now
+    (loc+'/Muon/Run2016BtoH/Muon_Mu19leg_2016BtoH_eff.root',
+     'MC', 'm_trgMu19leg_eta2p1_desy_mc'),
+    (loc+'/Muon/Run2016BtoH/Muon_Mu19leg_2016BtoH_eff.root',
+     'Data', 'm_trgMu19leg_eta2p1_desy_data'),
 ]
 
 for task in desyHistsToWrap:
     wsptools.SafeWrapHist(w, ['m_pt', 'expr::m_abs_eta("TMath::Abs(@0)",m_eta[0])'],
                           wsptools.ProcessDESYLeptonSFs(task[0], task[1], task[2]), name=task[2])
-for t in ['idiso_desy', 'trgIsoMu22_desy', 'trgIsoMu24_desy']:
+for t in ['idiso_desy', 'trgIsoMu22_desy', 'trgIsoMu24_desy', 'trgMu19leg_eta2p1_desy']:
     w.factory('expr::m_%s_ratio("@0/@1", m_%s_data, m_%s_mc)' % (t, t, t))
 
 # Electrons
